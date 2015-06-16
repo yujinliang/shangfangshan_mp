@@ -1,0 +1,87 @@
+// httpserver.go
+package main
+
+import (
+	
+	"net/http"
+	"config"
+	"controller"
+	"github.com/yujinliang/wechat/mp"
+	"github.com/codegangsta/negroni"
+	"github.com/julienschmidt/httprouter"
+	"github.com/astaxie/beego/session"
+	
+)
+
+//global vars.
+var (
+	
+	globalSessions *session.Manager
+	
+)
+func init() {
+	
+	globalSessions, _ = session.NewManager("memory", `{"cookieName":"gosessionid","gclifetime":3600}`)
+	go globalSessions.GC()
+	
+}
+//-----------
+//切换至不同的域名 start
+type HostSwitch map[string]http.Handler
+// Implement the ServerHTTP method on our new type
+func (hs HostSwitch) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    // Check if a http.Handler is registered for the given host.
+    // If yes, use it to handle the request.
+    if handler := hs[r.Host]; handler != nil {
+        handler.ServeHTTP(w, r)
+    } else {
+        // Handle host names for wich no handler is registered
+        http.Error(w, r.Host, 403) // Or Redirect?
+    }
+}
+//切换至不同的域名 end
+func main() {
+	
+	wx := mp.New(config.Token, config.AppId, config.AppSecret ,config.EncodingAESKey, "")
+	wx.HandleFunc(mp.MsgTypeText,  controller.HandleTextMsg)
+	wx.HandleFunc(mp.MsgTypeVoice, controller.HandleVoiceMsg)
+	wx.HandleFunc(mp.MsgTypeImage, controller.HandleImgeMsg)
+	wx.HandleFunc(mp.MsgTypeVideo, controller.HandleVideoMsg)
+	wx.HandleFunc(mp.MsgTypeLocation, controller.HandleLocationMsg)
+	wx.HandleFunc(mp.MsgTypeLink, controller.HandleLinkMsg)
+	//event.
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventSubscribe), controller.HandleSubscribeEvent)
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventUnsubscribe), controller.HandleUnSubscribeEvent)
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventScan), controller.HandleScanEvent)
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventLocation), controller.HandleLocationEvent)
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventClick), controller.HandleMenuClickEvent)
+	wx.HandleFunc(mp.GenHttpRouteKey(mp.MsgTypeEvent, mp.EventView), controller.HandleMenuViewEvent)
+	
+	//mux bind.
+	controller.WX = wx
+	controller.SNs = globalSessions
+	router := httprouter.New()
+	router.GET("/hello/:name", controller.Hello)
+	router.GET("/showuserinfo", controller.ShowUserInfo)
+	router.GET("/static/:folder/:filename", controller.Static)
+	router.POST("/admin/sendmass_msg", controller.MassMsg2WeinXinUser)
+	router.POST("/jieyuan_fbao_do_order", controller.JieYuanFABAO_Order)
+	router.POST("/d7_apply", controller.D7_Apply)
+	router.GET("/add2treasure_chest/:current_fbao_id",controller.Add2TreasureChest)
+	router.GET("/jieyuan_fbao_prepare_order/:current_fbao_id", controller.JieYuanFABAO_Prepare_Order)
+	
+	//mux chain.
+	muxchain := make(HostSwitch)
+	muxchain["wechat.jinliangyu_weinxin_dev.tunnel.mobi"] = wx
+	muxchain["webapp.jinliangyu_weinxin_dev.tunnel.mobi"] = router
+	
+	n := negroni.Classic()
+	n.UseHandler(muxchain)
+	
+	//create menu.
+	controller.CreateMenu(wx)
+	
+	//launch weixin http server.
+	n.Run(":8080")
+	
+}

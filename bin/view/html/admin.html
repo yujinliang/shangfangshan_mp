@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
+        <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+    </head>
+    <body>
+        <div data-role="page" id="q7_guanliyuan">
+            <div data-role="header">
+                <h1>管理员</h1>
+            </div>
+            <div data-role="footer"  data-position="fixed" data-id="footer">
+               <div data-role="navbar">
+                   <ul>
+                       <li><a href="#q7_guanliyuan" class="ui-btn-active ui-state-persist">管理员</a></li>
+                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
+                       <li><a href="#q7_jieyuan">结缘管理</a></li>
+                       <li><a href="#q7_da7">打七管理</a></li>
+                   </ul>
+                </div> 
+            </div>
+        </div>
+        <div data-role="page" id="q7_weixin_qunfa">
+            <div data-role="header">
+                <h1>微信群发</h1>
+            </div>
+            <div data-role="content">
+                <div id="q7_massText">
+                    <form action="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/admin/sendmass_msg"" method="post">
+                        <div data-role="fieldcontain">
+                            <label for="q7_text">文本消息</label>
+                            <textarea id="q7_text" name="q7_text"></textarea>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <input type="submit" value="submit"/>
+                        </div>
+                    </form>
+                </div>
+                </form>
+            </div>
+            <div data-role="footer"  data-position="fixed" data-id="footer">
+               <div data-role="navbar">
+                   <ul>
+                       <li><a href="#q7_guanliyuan" >管理员</a></li>
+                       <li><a href="#q7_weixin_qunfa" class="ui-btn-active ui-state-persist">微信群发</a></li>
+                       <li><a href="#q7_jieyuan">结缘管理</a></li>
+                       <li><a href="#q7_da7">打七管理</a></li>
+                   </ul>
+                </div> 
+            </div>
+        </div>
+        <div data-role="page" id="q7_jieyuan">
+            <div data-role="header">
+                <h1>结缘管理</h1>
+            </div>
+            <div data-role="footer"  data-position="fixed" data-id="footer">
+               <div data-role="navbar">
+                   <ul>
+                       <li><a href="#q7_guanliyuan" >管理员</a></li>
+                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
+                       <li><a href="#q7_jieyuan" class="ui-btn-active ui-state-persist">结缘管理</a></li>
+                       <li><a href="#q7_da7">打七管理</a></li>
+                   </ul>
+                </div> 
+            </div>
+        </div>
+        <div data-role="page" id="q7_da7">
+            <div data-role="header">
+                <h1>打七管理</h1>
+            </div>
+            <div data-role="footer"  data-position="fixed" data-id="footer">
+               <div data-role="navbar">
+                   <ul>
+                       <li><a href="#q7_guanliyuan" >管理员</a></li>
+                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
+                       <li><a href="#q7_jieyuan">结缘管理</a></li>
+                       <li><a href="#q7_da7" class="ui-btn-active ui-state-persist">打七管理</a></li>
+                   </ul>
+                </div> 
+            </div>
+        </div>
+    </body>
+</html>

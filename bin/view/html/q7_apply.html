@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
+        <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
+        <script id="q7_apply_hiden_template" type="text/x-handlebars-template">
+            <input type="hidden" id="q7_type" name="q7_type_id" value="{{q7_id}}"/>
+        </script>
+        <script type="text/javascript">
+            function getUrlParameter(sParam)
+            {
+                 var sPageURL = window.location.search.substring(1);
+                 var sURLVariables = sPageURL.split('&');
+                 for (var i = 0; i < sURLVariables.length; i++) 
+                 {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) 
+                    {
+                        return sParameterName[1];
+                    }
+                }
+            }
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () { 
+                var template = $("#q7_apply_hiden_template").template({"q7_id":getUrlParameter("q7_id")}).appendTo("#q7_apply_hidden_input");
+            });
+        </script>
+        <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
+        <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+        <title>报名</title>
+        <style type="text/css">
+            div[data-role=fieldcontain] { padding: 0 10px; border-bottom-width: 0; margin-bottom: 5px;!important;}
+            div[data-role=content] {border: 1px solid #EEE; padding: 10px 10px; margin: 10px 10px;border-radius: 8px;!important;}
+            fieldset[data-role=controlgroup] {border: 1px solid #EEE;padding: 5px 5px;border-radius: 8px;!important;}
+        </style>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="content">
+                <form id="q7_apply" action="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/d7_apply" method="post">
+                    
+                    <div id="q7_apply_hidden_input">
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="name">姓名:</label>
+                        <input type="text" id="name" name="name" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="age">年龄:</label>
+                        <input type="number" id="age" name="age" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="id_card">身份证号:</label>
+                        <input type="text" id="id_card" name="id_card" data-clar-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup" data-type="horizontal">
+                            <legend>性别:</legend>
+                            <input type="radio" name="sex" id="nan_id" value="1" checked="true"/>
+                            <label for="nan_id">男</label>
+                            <input type="radio" name="sex" id="nv_id" value="2"/>
+                            <label for="nv_id">女</label>
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="phone_number">手机号:</label>
+                        <input type="tel" id="phone_number" name="phone_number" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="job">职业:</label>
+                        <input type="text" id="job" name="job" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <input type="submit" value="提交"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

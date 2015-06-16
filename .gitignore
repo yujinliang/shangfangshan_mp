@@ -1,0 +1,12 @@
+
+*.a
+
+bin/web
+
+bin/webx
+
+src/github.com/astaxie/beego/
+
+src/github.com/codegangsta/negroni/
+
+src/github.com/julienschmidt/httprouter/
