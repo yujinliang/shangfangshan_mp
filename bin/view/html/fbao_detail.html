@@ -29,7 +29,7 @@
                 var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id")}).appendTo("#q7_fbao_detail_ok");
                 $("#chest").click(function (e) {
                     $.getJSON($(this).attr("href"), function (data) {
-                        console.log(data);
+                        $("#query_result_description").text(data.errmsg);
                         $.mobile.changePage("#query_result", {role: "dialog"});
                     });
                     e.preventDefault();

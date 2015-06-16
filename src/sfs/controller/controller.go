@@ -153,34 +153,6 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		
 
 }
-func GetCurrentId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
-//	session := sessions.GetSession(r)
-//	id_type , _ := session.Get("id_type").(string)
-//	id      , _ := session.Get("id").(string)
-//	fmt.Printf("%s, %s", id_type, id)
-//	var res struct {
-			
-//		Id_type string `json:"id_type"`
-//		Id      string `json:"id"`
-			
-//	}
-//	res.Id = id;
-//	res.Id_type = id_type
-		
-//	encoded, err := json.Marshal(&res);
-//	if err != nil {
-			
-//		fmt.Fprintf(w, "{id_type:%s, id:%s}", "", "")
-//		return
-			
-//	}
-		
-//	w.Header().Set("Content-Type", "application/json")
-//	w.Header().Set("Access-Control-Allow-Origin", "*")
-//	w.Write(encoded)
-				
-}
 //err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
 func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -213,11 +185,6 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	r.ParseForm()
 	fmt.Fprintf(w, "%v", r.Form)
 }
-func JieYuanFABAO_Prepare_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
-	r.ParseForm()
-	fmt.Fprintf(w, "id : %s", ps.ByName("id"))
-}
 func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	fmt.Fprintf(w, "%v", r.Form)
@@ -234,7 +201,7 @@ func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 	res.Id = ps.ByName("id");
 	res.ErrCode = 0;
-	res.ErrMsg  = "成功啦！，法宝已收入箱中！"
+	res.ErrMsg  = "成功啦！，法宝已收入百宝箱中！"
 		
 	encoded, err := json.Marshal(&res);
 	if err != nil {

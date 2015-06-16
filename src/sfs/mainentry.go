@@ -67,7 +67,6 @@ func main() {
 	router.POST("/do_forder", controller.JieYuanFABAO_Order)
 	router.POST("/d7_apply", controller.D7_Apply)
 	router.GET("/chest/:id",controller.Add2TreasureChest)
-	router.GET("/prepareforder/:id", controller.JieYuanFABAO_Prepare_Order)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)
