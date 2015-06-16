@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"sfs/config"
 	"net/http"
+	"encoding/json"
 	"github.com/yujinliang/wechat/mp"
 	"github.com/yujinliang/wechat/mp/request"
 	"github.com/yujinliang/wechat/mp/oauth2web"
@@ -215,7 +216,7 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 func JieYuanFABAO_Prepare_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	r.ParseForm()
-	fmt.Fprintf(w, "id : %s", ps.ByName("current_fbao_id"))
+	fmt.Fprintf(w, "id : %s", ps.ByName("id"))
 }
 func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -223,7 +224,30 @@ func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	fmt.Fprintf(w, "id: %s", ps.ByName("current_fbao_id"))
+	log.Printf("Add2TreasureChest: %s", ps.ByName("id"))
+	var res struct {
+			
+		Id      string `json:"id"`
+		ErrCode int 	`json:"errcode"`
+		ErrMsg  string `json:"errmsg"`	
+		
+	}
+	res.Id = ps.ByName("id");
+	res.ErrCode = 0;
+	res.ErrMsg  = "成功啦！，法宝已收入箱中！"
+		
+	encoded, err := json.Marshal(&res);
+	if err != nil {
+			
+		fmt.Fprintf(w, "{id:%s,errcode:%d,errmsg:%s}", res.Id, 1, "失败啦！没能加入百宝箱!")
+		return
+			
+	}
+		
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
 }
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 

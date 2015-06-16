@@ -64,10 +64,10 @@ func main() {
 	router.GET("/showuserinfo", controller.ShowUserInfo)
 	router.GET("/static/*filepath", controller.Static)
 	router.POST("/admin/sendmass_msg", controller.MassMsg2WeinXinUser)
-	router.POST("/jieyuan_fbao_do_order", controller.JieYuanFABAO_Order)
+	router.POST("/do_forder", controller.JieYuanFABAO_Order)
 	router.POST("/d7_apply", controller.D7_Apply)
-	router.GET("/add2treasure_chest/:current_fbao_id",controller.Add2TreasureChest)
-	router.GET("/jieyuan_fbao_prepare_order/:current_fbao_id", controller.JieYuanFABAO_Prepare_Order)
+	router.GET("/chest/:id",controller.Add2TreasureChest)
+	router.GET("/prepareforder/:id", controller.JieYuanFABAO_Prepare_Order)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)

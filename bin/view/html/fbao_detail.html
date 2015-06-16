@@ -7,8 +7,8 @@
         <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
         <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
         <script id="q7_fbao_detail_ok_template" type="text/x-handlebars-template">
-            <a data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/add2treasure_chest/{{fbao_id}}">放入百宝箱</a>
-            <a data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/jieyuan_fbao_prepare_order/{{fbao_id}}">去下单</a>
+            <a id="chest" data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/chest/{{fbao_id}}">放入百宝箱</a>
+            <a id="prepareforder" data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/prepareforder/{{fbao_id}}">去下单</a>
         </script>
         <script type="text/javascript">
             function getUrlParameter(sParam)
@@ -28,6 +28,13 @@
         <script type="text/javascript">
             $(document).ready(function () { 
                 var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id")}).appendTo("#q7_fbao_detail_ok");
+                $("#chest").click(function (e) {
+                    $.getJSON($(this).attr("href"), function (data) {
+                        console.log(data);
+                        $.mobile.changePage("#query_result", {role: "dialog"});
+                    });
+                    e.preventDefault();
+                });
             });
         </script>
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
@@ -43,6 +50,15 @@
                 </div>
                 <div id="q7_fbao_detail_ok">
                 </div>
+            </div>
+        </div>
+        <div id="query_result" data-role="dialog">
+            <div data-role="header">
+                <h1>结果提示</h1>
+            </div>
+            <div data-role="content">
+                <p id="query_result_description">成功啦！</p>
+                <a href="#" data-role="button" data-rel="back">Back</a>
             </div>
         </div>
     </body>
