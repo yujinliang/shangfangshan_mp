@@ -61,9 +61,8 @@ func main() {
 	controller.WX = wx
 	controller.SNs = globalSessions
 	router := httprouter.New()
-	router.GET("/hello/:name", controller.Hello)
 	router.GET("/showuserinfo", controller.ShowUserInfo)
-	router.GET("/static/:folder/:filename", controller.Static)
+	router.GET("/static/*filepath", controller.Static)
 	router.POST("/admin/sendmass_msg", controller.MassMsg2WeinXinUser)
 	router.POST("/jieyuan_fbao_do_order", controller.JieYuanFABAO_Order)
 	router.POST("/d7_apply", controller.D7_Apply)

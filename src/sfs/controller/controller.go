@@ -146,19 +146,11 @@ func CreateMenu(wx *mp.WeiXin) {
 //专门处理静态文件,如：.html, .jpg, .js等
 func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	folder 	  := ps.ByName("folder")
-	filename  := ps.ByName("filename")
-	filePath := config.StaticResourcesDir + "/" + folder + "/" + filename
-	log.Println("static: " + filePath)
-	if len(folder) > 0 && len(filename) > 0 {
+	filePath := config.StaticResourcesDir +  ps.ByName("filepath")
+	//log.Printf("filePath:%s, urlPath:%s, host:%s", filePath, r.URL.Path, r.Host)
+	http.ServeFile(w, r, filePath)
 		
-		http.ServeFile(w, r, filePath)
-		
-	} else {
-		
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		
-	}
+
 }
 func GetCurrentId(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -223,7 +215,7 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 func JieYuanFABAO_Prepare_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	r.ParseForm()
-	fmt.Fprintf(w, "%s", ps.ByName("current_fbao_id"))
+	fmt.Fprintf(w, "id : %s", ps.ByName("current_fbao_id"))
 }
 func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -231,7 +223,7 @@ func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	fmt.Fprintf(w, "%s", ps.ByName("current_fbao_id"))
+	fmt.Fprintf(w, "id: %s", ps.ByName("current_fbao_id"))
 }
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
