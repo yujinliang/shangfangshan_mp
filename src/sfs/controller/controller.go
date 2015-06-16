@@ -6,7 +6,7 @@ import (
 
 	"log"
 	"fmt"
-	"config"
+	"sfs/config"
 	"net/http"
 	"github.com/yujinliang/wechat/mp"
 	"github.com/yujinliang/wechat/mp/request"

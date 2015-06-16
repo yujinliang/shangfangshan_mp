@@ -4,8 +4,8 @@ package main
 import (
 	
 	"net/http"
-	"config"
-	"controller"
+	"sfs/config"
+	"sfs/controller"
 	"github.com/yujinliang/wechat/mp"
 	"github.com/codegangsta/negroni"
 	"github.com/julienschmidt/httprouter"
