@@ -7,7 +7,7 @@
         <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
         <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
         <script id="q7_fbao_detail_ok_template" type="text/x-handlebars-template">
-            <a id="chest" data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/chest/{{fbao_id}}">放入百宝箱</a>
+            <a id="chest" data-role="button"  href="{{vhost}}/chest/{{fbao_id}}">放入百宝箱</a>
         </script>
         <script type="text/javascript">
             function getUrlParameter(sParam)
@@ -26,7 +26,7 @@
         </script>
         <script type="text/javascript">
             $(document).ready(function () { 
-                var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id")}).appendTo("#q7_fbao_detail_ok");
+                var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id"), "vhost": location.protocol + "//" + location.host}).appendTo("#q7_fbao_detail_ok");
                 $("#chest").click(function (e) {
                     $.getJSON($(this).attr("href"), function (data) {
                         $("#query_result_description").text(data.errmsg);

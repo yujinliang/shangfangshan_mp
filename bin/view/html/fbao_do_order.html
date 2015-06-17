@@ -14,6 +14,11 @@
             #fbao_items {margin-bottom: 0px;border: 1px solid #EEE; border-radius: 8px;padding: 0px 8px;}
             #address_info {margin-top: 0px; margin-bottom: 10px; border: 1px solid #EEE; border-radius: 8px;}
         </style>
+        <script type="text/javascript">
+             $(document).ready(function () {
+                $("#q7_jieyuan_fabao").attr("action", location.protocol + "//" + location.host + "/" + "do_forder")
+             });
+        </script>
     </head>
     <body>
         <div data-role="page">
@@ -29,7 +34,7 @@
                 <h4>快递信息:</h4>
                 <div id="address_info">
                  
-                    <form id="q7_jieyuan_fabao" action="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/jieyuan_fbao_do_order" method="post">
+                    <form id="q7_jieyuan_fabao" action="#" method="post">
                         <div data-role="fieldcontain">
                             <label for="name">姓名:</label>
                             <input type="text" id="name" name ="name" data-clear-btn="true" data-mini="true"/>
