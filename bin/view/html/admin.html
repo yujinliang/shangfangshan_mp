@@ -6,6 +6,11 @@
         <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#q7sendmassmsg").attr("action", location.protocol + "//" + location.host + "/admin/sendmass_msg");
+            });
+        </script>
     </head>
     <body>
         <div data-role="page" id="q7_guanliyuan">
@@ -29,7 +34,7 @@
             </div>
             <div data-role="content">
                 <div id="q7_massText">
-                    <form action="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/admin/sendmass_msg"" method="post">
+                    <form id="q7sendmassmsg" action="#" method="post">
                         <div data-role="fieldcontain">
                             <label for="q7_text">文本消息</label>
                             <textarea id="q7_text" name="q7_text"></textarea>
