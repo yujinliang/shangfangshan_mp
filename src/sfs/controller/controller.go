@@ -26,13 +26,7 @@ var (
 )
 func HandleVoiceMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 		
-	//test oauth2
-	oauthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/showuserinfo", "snsapi_userinfo")
-	oauthUrl := oauthConfig.AuthCodeURL("testOauth2")
-	//oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
-	//oClient.CheckAccessTokenValid()
-	
-	replyText := wx.ReplyText(oauthUrl, r)
+	replyText := wx.ReplyText("语音消息", r)
 	w.Write([]byte(replyText))
 
 }
@@ -117,18 +111,28 @@ func HandleMenuViewEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXin
 //test menu
 func CreateMenu(wx *mp.WeiXin) {
 	
+
+	
 	menu := &mp.Menu{make([]mp.MenuButton,3)}
 	menu.Buttons[0].Name = "我要打七"
 	menu.Buttons[0].Type = mp.ButtonTypeView
-	menu.Buttons[0].Url	 = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/static/html/q7_list.html"
+	//generate auth url.
+	q7_OAuthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), config.WebHostUrl + "/q7_entry", "snsapi_base")
+	q7_url := q7_OAuthConfig.AuthCodeURL("q7_entry")
+	menu.Buttons[0].Url	 = q7_url
+	//---
 	menu.Buttons[1].Name = "论坛"
 	menu.Buttons[1].Type = mp.ButtonTypeView
 	menu.Buttons[1].Url  = "https://mp.weixin.qq.com"
+	//---
 	menu.Buttons[2].Name = "结缘"
 	menu.Buttons[2].SubButtons = make([]mp.MenuButton, 2)
 	menu.Buttons[2].SubButtons[0].Name = "结缘法宝"
 	menu.Buttons[2].SubButtons[0].Type = mp.ButtonTypeView
-	menu.Buttons[2].SubButtons[0].Url	= "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/static/html/fbao_list.html"
+	fbao_OAuthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), config.WebHostUrl + "/fbao_entry", "snsapi_base")
+	fbao_url := fbao_OAuthConfig.AuthCodeURL("fbao_entry")
+	menu.Buttons[2].SubButtons[0].Url	= fbao_url
+	//---
 	menu.Buttons[2].SubButtons[1].Name = "联系道场"
 	menu.Buttons[2].SubButtons[1].Type = mp.ButtonTypeView
 	menu.Buttons[2].SubButtons[1].Url	= "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/static/html/contact_info.html"
@@ -243,18 +247,31 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		
 	}
 }
-func ShowUserInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func FBaoEntry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	redirect2targetWithOpenId(w, r, config.WebHostUrl + "/static/html/fbao_list.html")
+	
+}
+func Q7Entry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	redirect2targetWithOpenId(w, r, config.WebHostUrl + "/static/html/q7_list.html")
+	
+}
+func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl string) {
+	
+	//get code.
 	r.ParseForm()
 	code  := r.FormValue("code")
-	state := r.FormValue("state")
-	fmt.Fprintf(w, "code: %s, state: %s\n", code, state)
+	//state := r.FormValue("state")
+	
 	//get access token.
-	oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/showuserinfo", "snsapi_userinfo")
+	oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
 	oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
 	oClient.ExchangeOAuth2AccessTokenByCode(code)
 	info, _ := oClient.UserInfo("zh_CN")
-	fmt.Fprintf(w, "openid:%s, nickname:%s, sex:%s, city:%s, province:%s, country:%s,UnionId:%s, HeadImageURL:%s, Privilege:%v", info.OpenId,info.Nickname, info.Sex, info.City, info.Province, info.Country, info.UnionId, info.HeadImageURL,info.Privilege )
+	
+	//redirect to fbao_list page.
+	http.Redirect(w, r, targetUrl + "?openid=" + info.OpenId, http.StatusFound)
 	
 }
 
