@@ -244,11 +244,6 @@ func Q7Entry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl string) {
 	
-	//get code.
-	r.ParseForm()
-	code  := r.FormValue("code")
-	//state := r.FormValue("state")
-	
 	//check if we had openid.
 	var openid string
 	session, _ := SNs.SessionStart(w,r)
@@ -256,6 +251,11 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	iId := session.Get("openid")
 	
 	if iId == nil {
+	
+		//get code.
+		r.ParseForm()
+		code  := r.FormValue("code")
+		//state := r.FormValue("state")
 	
 		//get access token.
 		oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
