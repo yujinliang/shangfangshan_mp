@@ -248,7 +248,6 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	r.ParseForm()
 	code  := r.FormValue("code")
 	//state := r.FormValue("state")
-	log.Print("code: " + code)
 	
 	//get access token.
 	oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
@@ -260,9 +259,7 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	session, _ := SNs.SessionStart(w,r)
 	defer session.SessionRelease(w)
 	session.Set("openid", info.OpenId)
-	
-	log.Print("openid: " + info.OpenId)
-	
+		
 	//redirect to fbao_list page.
 	http.Redirect(w, r, targetUrl + "?openid=" + info.OpenId, http.StatusFound)
 	
