@@ -26,13 +26,15 @@ var (
 )
 func HandleVoiceMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 		
-	replyText := wx.ReplyText("语音消息", r)
+	replyText := wx.ReplyText("http://http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/hello", r)
 	w.Write([]byte(replyText))
 
 }
 func HandleTextMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
-	replyText := wx.ReplyText("文本消息!", r)
+	q7_OAuthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), config.WebHostUrl + "/q7_entry", "snsapi_base")
+	q7_url := q7_OAuthConfig.AuthCodeURL("q7_entry")
+	replyText := wx.ReplyText(q7_url, r)
 	//data, _ := wx.MakeEncryptResponse([]byte(replyText), timestamp, nonce)
 	w.Write([]byte(replyText))
 	
@@ -225,27 +227,10 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	session, _ := SNs.SessionStart(w,r)
 	defer session.SessionRelease(w)
 	
-	iName := session.Get("name")
-	if iName != nil {
-		
-		str, ok := iName.(string)
-		if ok && str == ps.ByName("name") {
-			
-			fmt.Fprintf(w, "同主机，同名字，您又来了，%s", str)
-			
-		} else {
-			
-			session.Set("name", ps.ByName("name"))
-			fmt.Fprintf(w, "新来的的名字, %s", ps.ByName("name"))
-			
-		}
-		
-	} else {
-		
-		session.Set("name", ps.ByName("name"))
-		fmt.Fprintf(w, "新来的主机, %s", ps.ByName("name"))
-		
-	}
+	openid := session.Get("openid")
+	
+	fmt.Fprintf(w, "%s", openid)
+	
 }
 func FBaoEntry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -263,12 +248,20 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	r.ParseForm()
 	code  := r.FormValue("code")
 	//state := r.FormValue("state")
+	log.Print("code: " + code)
 	
 	//get access token.
 	oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
 	oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
 	oClient.ExchangeOAuth2AccessTokenByCode(code)
 	info, _ := oClient.UserInfo("zh_CN")
+	
+	//store openid to session.
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	session.Set("openid", info.OpenId)
+	
+	log.Print("openid: " + info.OpenId)
 	
 	//redirect to fbao_list page.
 	http.Redirect(w, r, targetUrl + "?openid=" + info.OpenId, http.StatusFound)
