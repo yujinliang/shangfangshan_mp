@@ -249,19 +249,34 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	code  := r.FormValue("code")
 	//state := r.FormValue("state")
 	
-	//get access token.
-	oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
-	oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
-	oClient.ExchangeOAuth2AccessTokenByCode(code)
-	info, _ := oClient.UserInfo("zh_CN")
-	
-	//store openid to session.
+	//check if we had openid.
+	var openid string
 	session, _ := SNs.SessionStart(w,r)
 	defer session.SessionRelease(w)
-	session.Set("openid", info.OpenId)
+	iId := session.Get("openid")
+	
+	if iId == nil {
+	
+		//get access token.
+		oauthConfig := oauth2web.NewOAuth2Config(config.AppId, config.AppSecret, config.WebHostUrl + "/fbao_entry", "snsapi_base")
+		oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
+		oClient.ExchangeOAuth2AccessTokenByCode(code)
+		info, _ := oClient.UserInfo("zh_CN")
+		openid = info.OpenId
+		
+		log.Printf("First: %s", openid)	
+		//store openid to session.
+		session.Set("openid", info.OpenId)
+		
+	
+	} else {
+		
+		openid = iId.(string)
+		log.Printf("Second: %s", openid)	
+	}
 		
 	//redirect to fbao_list page.
-	http.Redirect(w, r, targetUrl + "?openid=" + info.OpenId, http.StatusFound)
+	http.Redirect(w, r, targetUrl + "?openid=" + openid, http.StatusFound)
 	
 }
 
