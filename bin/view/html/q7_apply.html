@@ -26,6 +26,7 @@
         </script>
         <script type="text/javascript">
             $(document).ready(function () { 
+                $("#q7_apply").attr("action", location.protocol + "//" + location.host + "/d7_apply");
                 var template = $("#q7_apply_hiden_template").template({"q7_id":getUrlParameter("q7_id")}).appendTo("#q7_apply_hidden_input");
             });
         </script>
@@ -41,7 +42,7 @@
     <body>
         <div data-role="page">
             <div data-role="content">
-                <form id="q7_apply" action="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/d7_apply" method="post">
+                <form id="q7_apply" action="#" method="post">
                     
                     <div id="q7_apply_hidden_input">
                     </div>

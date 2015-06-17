@@ -7,7 +7,7 @@
         <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
         <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
         <script id="q7_detail_btn" type="text/x-handlebars-template">
-            <a data-role="button"  href="http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/static/html/q7_apply.html/{{q7_id}}">放入百宝箱</a>
+            <a data-role="button"  href="{{vhost}}/static/html/q7_apply.html/{{q7_id}}">放入百宝箱</a>
         </script>
         <script type="text/javascript">
             function getUrlParameter(sParam)
@@ -26,7 +26,7 @@
         </script>
         <script type="text/javascript">
             $(document).ready(function () { 
-                var template = $("#q7_detail_btn").template({"q7_id":getUrlParameter("q7_id")}).appendTo("#q7_submit");
+                var template = $("#q7_detail_btn").template({"q7_id":getUrlParameter("q7_id"), "vhost": location.protocol + "//" + location.host}).appendTo("#q7_submit");
             });
         </script>
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
