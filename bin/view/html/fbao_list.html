@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta charset="utf-8"
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+    <style type="text/css">
+        div[data-role=footer] {padding-left: 2%; padding-right: 2%;}
+        div[data-role=footer] a {width: 90%;}
+    </style>
+    <script type="text/javascript">
+    
+        /* for demo only */
+        $(document).on("pagebeforecreate", "#home", function (e, ui) {
+            //launch ajax for getting json data.
+            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?page=1&count=8", function (data) {
+                var items = ''
+                $.each(data, function (i, item) { 
+                    items += "<li>" + "<a href=fbao_detail.html?id=1001 data-ajax=false>" +item.name + i + "</a>" + "</li>"; 
+                })
+                $("#list").append(items).listview("refresh");
+            });
+        });
+
+        /* load more fucntion */
+        function addMore(page) {
+            $.mobile.loading("show", {
+                text: "Loading More...",
+                textVisible: true,
+                theme: "b"
+            });
+            setTimeout(function () {
+                $.mobile.loading("hide");
+            }, 2000);
+            //launch ajax for getting json data.
+            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?page=1&count=8", function (data) {
+                var items = ''
+                $.each(data, function (i, item) {
+                    
+                    items += "<li>" + "<a href=fbao_detail.html?id=1001 data-ajax=false>" + item.name + i + i + "</a>" + "</li>";
+                    
+                })
+                $("#list", page).append(items).listview("refresh");
+                $.mobile.loading("hide");
+            });
+        }
+
+        /* scroll event */
+        $(document).on("scrollstop", function (e) {
+            var activePage = $.mobile.pageContainer.pagecontainer("getActivePage"),
+            screenHeight = $.mobile.getScreenHeight(),
+            contentHeight = $(".ui-content", activePage).outerHeight(),
+            header = $(".ui-header", activePage).outerHeight() - 1,
+            scrolled = $(window).scrollTop(),
+            footer = $(".ui-footer", activePage).outerHeight() - 1,
+            scrollEnd = contentHeight - screenHeight + header + footer;
+            if (activePage[0].id == "home" && scrolled >= scrollEnd) {
+                console.log("adding..." + activePage);
+                addMore(activePage);
+            }
+        });
+    </script>
+    <title>法宝列表</title>
+  </head>
+  <body>
+    <div data-role="page" id="home">
+        <div data-role="content" class="ui-content">
+            <ul data-role="listview" id="list" data-inset="true"></ul>
+        </div>
+        <div data-id="toorder_footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <a id="toorder" data-role="button" data-theme="b" href="fbao_do_order.html">去下单</a>
+        </div>
+    </div>
+</body>
+</html>
