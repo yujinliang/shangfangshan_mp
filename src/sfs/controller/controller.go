@@ -301,17 +301,20 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 		oClient := &oauth2web.Client{OAuth2Config:oauthConfig}
 		oClient.ExchangeOAuth2AccessTokenByCode(code)
 		info, _ := oClient.UserInfo("zh_CN")
-		openid = info.OpenId
 		
-		log.Printf("First: %s", openid)	
-		//store openid to session.
-		session.Set("openid", info.OpenId)
+		if info != nil && len(info.OpenId) > 0 {
+			
+			openid = info.OpenId
+			//store openid to session.
+			session.Set("openid", info.OpenId)
+		
+		}
 		
 	
 	} else {
 		
 		openid = iId.(string)
-		log.Printf("Second: %s", openid)	
+			
 	}
 		
 	//redirect to fbao_list page.
