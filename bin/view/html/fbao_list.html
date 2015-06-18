@@ -5,6 +5,11 @@
     <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
     <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+    <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
+    <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
+    <script id="q7_fbao_detail_ok_template" type="text/x-handlebars-template">
+            <a id="chest" data-role="button"  href="{{vhost}}/chest/{{fbao_id}}">放入百宝箱</a>
+    </script>
     <style type="text/css">
         div[data-role=footer] {padding-left: 2%; padding-right: 2%;}
         #toorder {width: 89%;}
@@ -15,9 +20,33 @@
         #address_info {margin-top: 0px; margin-bottom: 10px; border: 1px solid #EEE; border-radius: 8px;}
     </style>
     <script type="text/javascript">
-    
+        function getUrlParameter(sParam)
+        {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) 
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) 
+                {
+                    return sParameterName[1];
+                }
+            }
+        }
+        //---
         $(document).ready(function () {
             $("#q7_jieyuan_fabao").attr("action", location.protocol + "//" + document.domain + "/do_forder")
+            //---
+            var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id"), "vhost": location.protocol + "//" + location.host}).appendTo("#q7_fbao_detail_ok");
+            $("#chest").click(function (e) {
+                $.getJSON($(this).attr("href"), function (data) {
+                    $("#query_result_description").text(data.errmsg);
+                    $.mobile.changePage("#query_result", {role: "dialog"});
+                });
+                e.preventDefault();
+            });
+            //---
+            
         });
         /* for demo only */
         $(document).on("pagebeforecreate", "#fbao_list_page", function (e, ui) {
@@ -25,7 +54,7 @@
             $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?&count=20&page=1", function (data) {
                 var items = ''
                 $.each(data, function (i, item) { 
-                    items += "<li>" + "<a href=fbao_detail.html?id=1001 data-ajax=false>" +item.name + i + "</a>" + "</li>"; 
+                    items += "<li>" + "<a href=#fbao_detail_page data-rel=dialog>" +item.name + i + "</a>" + "</li>"; 
                 })
                 $("#list").append(items).listview("refresh");
             });
@@ -46,7 +75,7 @@
                 var items = ''
                 $.each(data, function (i, item) {
                     
-                    items += "<li>" + "<a href=fbao_detail.html?id=1001 data-ajax=false>" + item.name + i + i + "</a>" + "</li>";
+                    items += "<li>" + "<a href=#fbao_detail_page data-rel=dialog>" + item.name + i + i + "</a>" + "</li>";
                     
                 })
                 $("#list", page).append(items).listview("refresh");
@@ -123,6 +152,31 @@
                 </form>
                 </div>
             </div>
+    </div>
+      
+    <div id="fbao_detail_page" data-role="page">
+        <div data-role="header">
+            <h1>法宝详情页</h1>
+        </div>
+        <div data-role="content">
+            <div id="fbao_detail_content">
+                <h1>安士全书</h1>
+                <p>积德行善</p>
+            </div>
+            <div id="q7_fbao_detail_ok">
+                <a data-rel="back" data-role="button">后退</a>
+            </div>
+        </div>
+    </div>
+      
+    <div id="query_result" data-role="dialog">
+        <div data-role="header">
+            <h1>结果提示</h1>
+        </div>
+        <div data-role="content">
+            <p id="query_result_description">成功啦！</p>
+            <a href="#" data-role="button" data-rel="back">Back</a>
+        </div>
     </div>
 </body>
 </html>
