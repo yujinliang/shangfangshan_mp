@@ -225,9 +225,11 @@ func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 func GetFBaoList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	//第几页.
-	//page := r.URL.Query().Get("page")
+	page := r.URL.Query().Get("page")
 	//每一页的法宝数.
-	//count := r.URL.Query().Get("count")
+	count := r.URL.Query().Get("count")
+	
+	log.Printf("Page: %d, Count: %d", page, count)
 	
 	//--
 	type FBAO struct {
