@@ -68,6 +68,7 @@ func main() {
 	router.POST("/do_forder", controller.JieYuanFABAO_Order)
 	router.POST("/d7_apply", controller.D7_Apply)
 	router.GET("/chest/:id",controller.Add2TreasureChest)
+	router.GET("/getfbao_list", controller.GetFBaoList)
 	
 	//just for debug.
 	router.GET("/hello", controller.Hello)

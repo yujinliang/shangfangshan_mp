@@ -222,6 +222,43 @@ func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	w.Write(encoded)
 	
 }
+func GetFBaoList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	//第几页.
+	//page := r.URL.Query().Get("page")
+	//每一页的法宝数.
+	//count := r.URL.Query().Get("count")
+	
+	//--
+	type FBAO struct {
+		
+		Id   string `json:"id"`
+		Name string `json:"name"`
+		Desc string `json:"desc,omitempty"`
+		
+	}
+	
+	fbaoSlice := make([]*FBAO, 8)
+	
+	for i, _ := range fbaoSlice {
+		
+		fbaoSlice[i] = &FBAO{Id:"1001", Name: "念佛成佛", Desc: "信愿行具足，老实念：阿弥陀佛， 此生一定得佛接引往生西方极乐世界！"}
+		
+	}
+	
+	encoded, err := json.Marshal(&fbaoSlice);
+	if err != nil {
+			
+		fmt.Fprintf(w, "[]")
+		return
+			
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
+}
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	session, _ := SNs.SessionStart(w,r)
