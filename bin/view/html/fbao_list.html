@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
     <style type="text/css">
         div[data-role=footer] {padding-left: 2%; padding-right: 2%;}
-        div[data-role=footer] a {width: 90%;}
+        #toorder {width: 89%;}
     </style>
     <script type="text/javascript">
     
         /* for demo only */
         $(document).on("pagebeforecreate", "#home", function (e, ui) {
             //launch ajax for getting json data.
-            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?page=1&count=8", function (data) {
+            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?&count=20&page=1", function (data) {
                 var items = ''
                 $.each(data, function (i, item) { 
                     items += "<li>" + "<a href=fbao_detail.html?id=1001 data-ajax=false>" +item.name + i + "</a>" + "</li>"; 
@@ -22,7 +22,7 @@
                 $("#list").append(items).listview("refresh");
             });
         });
-
+        var currentPageNumber = 0;
         /* load more fucntion */
         function addMore(page) {
             $.mobile.loading("show", {
@@ -34,7 +34,7 @@
                 $.mobile.loading("hide");
             }, 2000);
             //launch ajax for getting json data.
-            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?page=1&count=8", function (data) {
+            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?count=20&page=" + (currentPageNumber + 1), function (data) {
                 var items = ''
                 $.each(data, function (i, item) {
                     
@@ -43,6 +43,7 @@
                 })
                 $("#list", page).append(items).listview("refresh");
                 $.mobile.loading("hide");
+                currentPageNumber += 1;
             });
         }
 
@@ -69,7 +70,7 @@
             <ul data-role="listview" id="list" data-inset="true"></ul>
         </div>
         <div data-id="toorder_footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
-            <a id="toorder" data-role="button" data-theme="b" href="fbao_do_order.html">去下单</a>
+                <a id="toorder" data-role="button" data-theme="b" href="fbao_do_order.html">去下单</a>
         </div>
     </div>
 </body>
