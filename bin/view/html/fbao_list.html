@@ -106,7 +106,7 @@
             $.getJSON(vHostDomain + "/getfbao_list?&count=20&page=1", function (data) {
                 var items = ''
                 $.each(data, function (i, item) { 
-                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" +item.name + i + "</a>" + "</li>"; 
+                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" +item.name + "</a>" + "</li>"; 
                 })
                 $("#list").append(items).listview("refresh");
             });
@@ -127,7 +127,7 @@
                 var items = ''
                 $.each(data, function (i, item) {
                     
-                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" + item.name + i + i + "</a>" + "</li>";
+                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" + item.name + "</a>" + "</li>";
                     
                 })
                 $("#list", page).append(items).listview("refresh");
