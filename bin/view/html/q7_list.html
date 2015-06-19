@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
+        <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
+        <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
+        <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+        <script type="text/javascript">
+        var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
+        /* for demo only */
+        $(document).on("pagebeforecreate", "#q7_list_page", function (e, ui) {
+            //launch ajax for getting json data.
+            $.getJSON(vHostDomain + "/get_q7_list?&count=20&page=1", function (data) {
+                var items = ''
+                $.each(data, function (i, item) { 
+                    items += "<li>" + "<a href=#q7_detail_page data-q7-id=" + item.id + ">" +item.name + "</a>" + "</li>"; 
+                })
+                $("#list_q7_list_page").append(items).listview("refresh");
+            });
+        });
+        var currentPageNumber = 1;
+        /* load more fucntion */
+        function addMore(page) {
+            $.mobile.loading("show", {
+                text: "Loading More...",
+                textVisible: true,
+                theme: "b"
+            });
+            setTimeout(function () {
+                $.mobile.loading("hide");
+            }, 2000);
+            //launch ajax for getting json data.
+            $.getJSON(vHostDomain + "/get_q7_list?count=20&page=" + (currentPageNumber + 1), function (data) {
+                var items = ''
+                $.each(data, function (i, item) {
+                    
+                    items += "<li>" + "<a href=#q7_detail_page data-q7-id=" + item.id + ">" + item.name + "</a>" + "</li>";
+                    
+                })
+                $("#list_q7_list_page", page).append(items).listview("refresh");
+                $.mobile.loading("hide");
+                currentPageNumber += 1;
+            });
+        }
+
+        /* scroll event */
+        $(document).on("scrollstop", function (e) {
+            var activePage = $.mobile.pageContainer.pagecontainer("getActivePage"),
+            screenHeight = $.mobile.getScreenHeight(),
+            contentHeight = $(".ui-content", activePage).outerHeight(),
+            header = $(".ui-header", activePage).outerHeight() - 1,
+            scrolled = $(window).scrollTop(),
+            footer = $(".ui-footer", activePage).outerHeight() - 1,
+            scrollEnd = contentHeight - screenHeight + header + footer;
+            if (activePage[0].id == "q7_list_page" && scrolled >= scrollEnd) {
+                console.log("adding..." + activePage);
+                addMore(activePage);
+            }
+        });
+        </script>
+        <title>地藏七分类</title>
+    </head>
+    <body>
+        <div id="q7_list_page" data-role="page">
+            <div data-role="content">
+                <ul id="list_q7_list_page" data-role="listview" data-theme="a" data-inset=true>
+                </ul>
+            </div>
+        </div>
+        <div id="q7_detail_page" data-role="page">
+            <div data-role="content">
+                <h1>基础七</h1>
+                <p>七天中，学习佛法，拜忏，诵经，念佛！</p>
+                <p>时间: 每月的1号，10号，19号开七</p>
+            
+                <div id="q7_submit">
+                </div>
+            </div>
+        </div>
+        <div id="q7_d7_apply_page" data-role="page">
+            <div data-role="content">
+                <form id="q7_apply" action="#" method="post">
+                    
+                    <div id="q7_apply_hidden_input">
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="name">姓名:</label>
+                        <input type="text" id="name" name="name" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="age">年龄:</label>
+                        <input type="number" id="age" name="age" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="id_card">身份证号:</label>
+                        <input type="text" id="id_card" name="id_card" data-clar-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup" data-type="horizontal">
+                            <legend>性别:</legend>
+                            <input type="radio" name="sex" id="nan_id" value="1" checked="true"/>
+                            <label for="nan_id">男</label>
+                            <input type="radio" name="sex" id="nv_id" value="2"/>
+                            <label for="nv_id">女</label>
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="phone_number">手机号:</label>
+                        <input type="tel" id="phone_number" name="phone_number" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="job">职业:</label>
+                        <input type="text" id="job" name="job" data-clear-btn="true" data-mini="true"/>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <input type="submit" value="提交"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
