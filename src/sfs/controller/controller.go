@@ -189,7 +189,29 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	r.ParseForm()
-	fmt.Fprintf(w, "%v", r.Form)
+	var res struct {
+			
+		Id      string `json:"id"`
+		ErrCode int 	`json:"errcode"`
+		ErrMsg  string `json:"errmsg"`	
+		
+	}
+	res.Id = "10001" //订单号
+	res.ErrCode = 0;
+	res.ErrMsg  = "成功啦！，法宝结缘成功！"
+		
+	encoded, err := json.Marshal(&res);
+	if err != nil {
+			
+		fmt.Fprintf(w, "{id:%s,errcode:%d,errmsg:%s}", res.Id, 1, "失败啦！法宝没能结缘成功!")
+		return
+			
+	}
+		
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
 }
 func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	

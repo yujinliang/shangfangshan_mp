@@ -49,6 +49,26 @@
             });
             //--- 
         });
+        $(document).on("click", "#fbao_do_order_page #q7_jieyuan_fabao_submit_btn", function (e) {
+            e.preventDefault();
+            $(this).attr("disabled","disabled");
+            var formObject = $("#fbao_do_order_page #q7_jieyuan_fabao");
+            var formData = formObject.serialize();
+            $.ajax({
+                url:formObject.attr("action"),
+                type:"post",
+                data:formData,
+                success:function (data) {
+                    $("#query_result #query_result_description").text(data.errmsg);
+                    $.mobile.changePage("#query_result", {role: "dialog"});
+                },
+                error: function (xhr) {
+                    $("#query_result #query_result_description").text(xhr.statusText + xhr.resoponseText);
+                    $.mobile.changePage("#query_result", {role: "dialog"});
+                }
+            });
+            
+        });
         $(document).on("click", "#list li a", function (e) {
             e.preventDefault();
             localStorage["fabao_id"] = $(this).data("fbao-id");
@@ -161,7 +181,7 @@
                         </div>
                         <input type="hidden" id="fbao_ids" name="fbao_ids" value="1001@1_1004@1"/>
                         <div data-role="fieldcontain">
-                            <input type="submit" value="提交"/>
+                            <a id="q7_jieyuan_fabao_submit_btn" href="#" data-role="button">提交</a>
                             <a href="#" data-role="button" data-rel="back">关闭</a>
                         </div>
                 </form>
