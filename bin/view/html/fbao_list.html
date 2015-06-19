@@ -25,7 +25,8 @@
     <script type="text/javascript">
         var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
         var vOpenId = getUrlParameter("openid");
-    
+        //for fabao list page , which item is to be selected now.
+        var storeObject = {id : "" };
         //--
         function getUrlParameter(sParam)
         {
@@ -42,11 +43,11 @@
         }
         //---
         $(document).ready(function () {
+        
+            //---
             $("#q7_jieyuan_fabao").attr("action", vHostDomain + "/do_forder");
             //---
             $("#q7_openid_template").template({"openid":vOpenId}).appendTo("#q7_jieyuan_fabao");
-            //---
-            $("#q7_fbao_detail_ok_template").template({"fbao_id":localStorage["fabao_id"], "vhost":vHostDomain}).appendTo("#q7_fbao_detail_ok");
             //---
             $("#chest").click(function (e) {
                 $.getJSON($(this).attr("href"), function (data) {
@@ -96,17 +97,18 @@
         });
         $(document).on("click", "#list li a", function (e) {
             e.preventDefault();
-            localStorage["fabao_id"] = $(this).data("fbao-id");
+            storeObject.id = $(this).data("fbao-id");
             $.mobile.changePage(this.href, {transition:"pop", role:"dialog"});
         });
         $(document).on("pagebeforecreate", "#fbao_detail_page", function (e) {
-            var fbao_id = localStorage["fabao_id"];
+            var fbao_id = storeObject.id;
             $.getJSON(vHostDomain + "/getfbao_detail?fbao_id=" + fbao_id, function (data) {
                 console.log(data)
                 $("#fbao_detail_page #fbao_name").text(data.name);
                 $("#fbao_detail_page #fbao_desc").text(data.desc);
                 $("#fbao_detail_page #fbao_images").text(data.imagenames);
             });
+            $("#q7_fbao_detail_ok_template").template({"fbao_id":storeObject.id, "vhost":vHostDomain}).appendTo("#q7_fbao_detail_ok");
         });
         /* for demo only */
         $(document).on("pagebeforecreate", "#fbao_list_page", function (e, ui) {
@@ -223,7 +225,7 @@
                 <p id="fbao_images"></p>
             </div>
             <div id="q7_fbao_detail_ok">
-                <a data-rel="back" data-role="button">后退</a>
+                <a data-rel="back" data-role="button">关闭</a>
             </div>
         </div>
     </div>
