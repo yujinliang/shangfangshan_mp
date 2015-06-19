@@ -194,6 +194,7 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	//3. 写入数据库成功后， 清除session中的chest， 然后返回提示成功信息.
 	//4. 若写入数据库失败， 则不清除session中的chest（以供用户重试）然后返回出错信息.
 	r.ParseForm()
+	fmt.Printf("q7openid: %v", r.FormValue("q7openid"))
 	var res struct {
 			
 		Id      string `json:"id"`
