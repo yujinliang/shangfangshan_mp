@@ -180,11 +180,11 @@
                     <form id="q7_jieyuan_fabao" action="#" method="post">
                         <div data-role="fieldcontain">
                             <label for="name">姓名:</label>
-                            <input type="text" id="name" name ="name" data-clear-btn="true" data-mini="true"/>
+                            <input type="text" id="name" name ="name" data-clear-btn="true" data-mini="true" required/>
                         </div>
                         <div data-role="fieldcontain">
                             <label for="phone_number">手机号:</label>
-                            <input type="tel" id="phone_number" name="phone_number" data-clear-btn="true" data-mini="true"/>
+                            <input type="tel" id="phone_number" name="phone_number" data-clear-btn="true" data-mini="true" required/>
                         </div>
                         <div data-role="fieldcontain">
                             <label for="postcode">邮编:</label>
@@ -192,9 +192,9 @@
                         </div>
                         <div data-role="fieldcontain">
                             <label for="address">邮寄地址:</label>
-                            <input type="text" id="address" name="address" data-clear-btn="true" data-mini="true"/>
+                            <textarea id="address" name="address" data-clear-btn="true" data-mini="true" required></textarea>
                         </div>
-                        <input type="hidden" id="fbao_ids" name="fbao_ids" value="1001@1_1004@1"/>
+                    
                         <div data-role="fieldcontain">
                             <a id="q7_jieyuan_fabao_submit_btn" href="#" data-role="button">提交</a>
                             <a href="#" data-role="button" data-rel="back">关闭</a>
