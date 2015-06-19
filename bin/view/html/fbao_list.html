@@ -20,6 +20,8 @@
         #address_info {margin-top: 0px; margin-bottom: 10px; border: 1px solid #EEE; border-radius: 8px;}
     </style>
     <script type="text/javascript">
+        var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
+        
         function getUrlParameter(sParam)
         {
             var sPageURL = window.location.search.substring(1);
@@ -35,9 +37,9 @@
         }
         //---
         $(document).ready(function () {
-            $("#q7_jieyuan_fabao").attr("action", location.protocol + "//" + document.domain + "/do_forder")
+            $("#q7_jieyuan_fabao").attr("action", vHostDomain + "/do_forder")
             //---
-            var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":getUrlParameter("id"), "vhost": location.protocol + "//" + location.host}).appendTo("#q7_fbao_detail_ok");
+            var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":localStorage["fabao_id"], "vhost":vHostDomain}).appendTo("#q7_fbao_detail_ok");
             $("#chest").click(function (e) {
                 $.getJSON($(this).attr("href"), function (data) {
                     $("#query_result_description").text(data.errmsg);
@@ -45,16 +47,29 @@
                 });
                 e.preventDefault();
             });
-            //---
-            
+            //--- 
+        });
+        $(document).on("click", "#list li a", function (e) {
+            e.preventDefault();
+            localStorage["fabao_id"] = $(this).data("fbao-id");
+            $.mobile.changePage(this.href, {transition:"pop", role:"dialog"});
+        });
+        $(document).on("pagebeforecreate", "#fbao_detail_page", function (e) {
+            var fbao_id = localStorage["fabao_id"];
+            $.getJSON(vHostDomain + "/getfbao_detail?fbao_id=" + fbao_id, function (data) {
+                console.log(data)
+                $("#fbao_detail_page #fbao_name").text(data.name);
+                $("#fbao_detail_page #fbao_desc").text(data.desc);
+                $("#fbao_detail_page #fbao_images").text(data.imagenames);
+            });
         });
         /* for demo only */
         $(document).on("pagebeforecreate", "#fbao_list_page", function (e, ui) {
             //launch ajax for getting json data.
-            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?&count=20&page=1", function (data) {
+            $.getJSON(vHostDomain + "/getfbao_list?&count=20&page=1", function (data) {
                 var items = ''
                 $.each(data, function (i, item) { 
-                    items += "<li>" + "<a href=#fbao_detail_page data-rel=dialog>" +item.name + i + "</a>" + "</li>"; 
+                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" +item.name + i + "</a>" + "</li>"; 
                 })
                 $("#list").append(items).listview("refresh");
             });
@@ -71,11 +86,11 @@
                 $.mobile.loading("hide");
             }, 2000);
             //launch ajax for getting json data.
-            $.getJSON("http://webapp.jinliangyu_weinxin_dev.tunnel.mobi" + "/getfbao_list?count=20&page=" + (currentPageNumber + 1), function (data) {
+            $.getJSON(vHostDomain + "/getfbao_list?count=20&page=" + (currentPageNumber + 1), function (data) {
                 var items = ''
                 $.each(data, function (i, item) {
                     
-                    items += "<li>" + "<a href=#fbao_detail_page data-rel=dialog>" + item.name + i + i + "</a>" + "</li>";
+                    items += "<li>" + "<a href=#fbao_detail_page data-fbao-id=" + item.id + ">" + item.name + i + i + "</a>" + "</li>";
                     
                 })
                 $("#list", page).append(items).listview("refresh");
@@ -160,8 +175,9 @@
         </div>
         <div data-role="content">
             <div id="fbao_detail_content">
-                <h1>安士全书</h1>
-                <p>积德行善</p>
+                <h1 id="fbao_name">安士全书</h1>
+                <p id="fbao_desc">积德行善</p>
+                <p id="fbao_images"></p>
             </div>
             <div id="q7_fbao_detail_ok">
                 <a data-rel="back" data-role="button">后退</a>

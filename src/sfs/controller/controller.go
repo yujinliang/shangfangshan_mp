@@ -222,6 +222,39 @@ func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	w.Write(encoded)
 	
 }
+func GetFBaoDetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	fbao_id := r.URL.Query().Get("fbao_id")
+	log.Printf("fbao_id: %s", fbao_id)
+	
+	//---
+	type FBAO_INFO struct {
+		
+		Id   string `json:"id"`
+		Name string `json:"name"`
+		Desc string `json:"desc,omitempty"`
+		ImageNames []string `json:"imagenames,omitempty"`
+		
+	}
+	
+	var info FBAO_INFO
+	info.Id = fbao_id
+	info.Name = "念佛成佛"
+	info.Desc = "念佛是因， 成佛是果，不可思议！信愿行三者不可缺一也！若真是笃信，当即放下娑婆万有，志求西方，得生彼国！则此生不枉过也!!!"
+	info.ImageNames = []string{"1.jpg","2.jpg"}
+	
+	encoded, err := json.Marshal(&info)
+	if err != nil {
+		
+		fmt.Fprintf(w, "{}")
+		
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
+}
 func GetFBaoList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	//第几页.
@@ -236,15 +269,13 @@ func GetFBaoList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		
 		Id   string `json:"id"`
 		Name string `json:"name"`
-		Desc string `json:"desc,omitempty"`
-		
 	}
 	
 	fbaoSlice := make([]*FBAO, 8)
 	
 	for i, _ := range fbaoSlice {
 		
-		fbaoSlice[i] = &FBAO{Id:"1001", Name: "念佛成佛", Desc: "信愿行具足，老实念：阿弥陀佛， 此生一定得佛接引往生西方极乐世界！"}
+		fbaoSlice[i] = &FBAO{Id:"1001", Name: "念佛成佛"}
 		
 	}
 	
