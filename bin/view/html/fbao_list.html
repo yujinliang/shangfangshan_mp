@@ -43,21 +43,20 @@
         }
         //---
         $(document).ready(function () {
-        
             //---
             $("#q7_jieyuan_fabao").attr("action", vHostDomain + "/do_forder");
             //---
             $("#q7_openid_template").template({"openid":vOpenId}).appendTo("#q7_jieyuan_fabao");
-            //---
-            $("#chest").click(function (e) {
-                $.getJSON($(this).attr("href"), function (data) {
-                    $("#query_result_description").text(data.errmsg);
-                    $.mobile.changePage("#query_result", {role: "dialog"});
-                });
-                e.preventDefault();
-            });
-            //--- 
         });
+        //---
+        $(document).on("click", "#chest", function (e) {
+            $.getJSON($(this).attr("href"), function (data) {
+                $("#query_result_description").text(data.errmsg);
+                $.mobile.changePage("#query_result", {role: "dialog"});
+            });
+            e.preventDefault();
+        });
+        //--- 
         $(document).on("pagebeforecreate", "#fbao_do_order_page", function (e) {
             $.ajax({
                 url:vHostDomain + "/getfbao_list_from_chest",
@@ -156,7 +155,6 @@
             footer = $(".ui-footer", activePage).outerHeight() - 1,
             scrollEnd = contentHeight - screenHeight + header + footer;
             if (activePage[0].id == "fbao_list_page" && scrolled >= scrollEnd) {
-                console.log("adding..." + activePage);
                 addMore(activePage);
             }
         });
