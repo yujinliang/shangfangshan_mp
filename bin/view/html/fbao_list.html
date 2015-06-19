@@ -8,7 +8,10 @@
     <script type="text/javascript" src="../js/handlebars-v3.0.3.js"></script>
     <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
     <script id="q7_fbao_detail_ok_template" type="text/x-handlebars-template">
-            <a id="chest" data-role="button"  href="{{vhost}}/chest/{{fbao_id}}">放入百宝箱</a>
+        <a id="chest" data-role="button"  href="{{vhost}}/chest/{{fbao_id}}">放入百宝箱</a>
+    </script>
+    <script id="q7_openid_template" type="text/x-handlebars-template">
+        <input type="hidden" id="q7openid" name="q7openid" value="{{openid}}"/>
     </script>
     <style type="text/css">
         div[data-role=footer] {padding-left: 2%; padding-right: 2%;}
@@ -21,12 +24,30 @@
     </style>
     <script type="text/javascript">
         var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
-        
+        var vOpenId = getUrlParameter("openid");
+    
+        //--
+        function getUrlParameter(sParam)
+        {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) 
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) 
+                {
+                        return sParameterName[1];
+                }
+            }
+        }
         //---
         $(document).ready(function () {
-            $("#q7_jieyuan_fabao").attr("action", vHostDomain + "/do_forder")
+            $("#q7_jieyuan_fabao").attr("action", vHostDomain + "/do_forder");
             //---
-            var template = $("#q7_fbao_detail_ok_template").template({"fbao_id":localStorage["fabao_id"], "vhost":vHostDomain}).appendTo("#q7_fbao_detail_ok");
+            $("#q7_openid_template").template({"openid":vOpenId}).appendTo("#q7_jieyuan_fabao");
+            //---
+            $("#q7_fbao_detail_ok_template").template({"fbao_id":localStorage["fabao_id"], "vhost":vHostDomain}).appendTo("#q7_fbao_detail_ok");
+            //---
             $("#chest").click(function (e) {
                 $.getJSON($(this).attr("href"), function (data) {
                     $("#query_result_description").text(data.errmsg);
