@@ -357,6 +357,37 @@ func GetFBaoListFromChest(w http.ResponseWriter, r *http.Request, ps httprouter.
 	w.Write(encoded)
 	
 }
+func GetQ7List(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	//--
+	type Q7Type struct {
+		
+		Id   string `json:"id"`
+		Name string `json:"name"`
+		
+	}
+	
+	q7slice := make([]*Q7Type, 10)
+	
+	for i, _ := range q7slice {
+		
+		q7slice[i] = &Q7Type{Id:"1001", Name: "基础七"}
+		
+	}
+	
+	encoded, err := json.Marshal(&q7slice);
+	if err != nil {
+			
+		fmt.Fprintf(w, "[]")
+		return
+			
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
+}
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	session, _ := SNs.SessionStart(w,r)
