@@ -70,6 +70,7 @@ func main() {
 	router.GET("/chest/:id",controller.Add2TreasureChest)
 	router.GET("/getfbao_list", controller.GetFBaoList)
 	router.GET("/getfbao_detail", controller.GetFBaoDetailInfo)
+	router.GET("/getfbao_list_from_chest", controller.GetFBaoListFromChest)
 	
 	//just for debug.
 	router.GET("/hello", controller.Hello)

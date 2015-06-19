@@ -188,6 +188,11 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 }
 func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	//TODO:
+	//1. 首先检查session中是否有chest， 若无则返回出错信息: 宝箱为空.
+	//2. 若session中存在chest， 则将form信息，及chest信息一并存入数据库相应表中.
+	//3. 写入数据库成功后， 清除session中的chest， 然后返回提示成功信息.
+	//4. 若写入数据库失败， 则不清除session中的chest（以供用户重试）然后返回出错信息.
 	r.ParseForm()
 	var res struct {
 			
@@ -215,11 +220,18 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 }
 func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	//TODO:
+	//1. 首先通过手机号，与身份证号在数据库中查找， 用户是否已报过名了，且开七时间为未来时间。
+	//2. 若报过了， 则提示：不可重报.
+	//3. 若未报过名， 则写入数据库， 然后返回成功提示信息.
 	fmt.Fprintf(w, "%v", r.Form)
 }
 func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	log.Printf("Add2TreasureChest: %s", ps.ByName("id"))
+	//TODO: 
+	//1.首先检查此法宝是否已在chest中， 若在， 则返回错误信息，提示法宝早已在宝箱中，不可再重复添加.
+	//2.若为新法宝，则存入session中，以备后用.
 	var res struct {
 			
 		Id      string `json:"id"`
@@ -287,6 +299,37 @@ func GetFBaoList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	log.Printf("Page: %d, Count: %d", page, count)
 	
 	//--
+	type FBAO struct {
+		
+		Id   string `json:"id"`
+		Name string `json:"name"`
+	}
+	
+	fbaoSlice := make([]*FBAO, 8)
+	
+	for i, _ := range fbaoSlice {
+		
+		fbaoSlice[i] = &FBAO{Id:"1001", Name: "念佛成佛"}
+		
+	}
+	
+	encoded, err := json.Marshal(&fbaoSlice);
+	if err != nil {
+			
+		fmt.Fprintf(w, "[]")
+		return
+			
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
+	
+}
+//从百宝箱中取出法宝列表,引接口返回的信息只是用于展示.
+func GetFBaoListFromChest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+		//--
 	type FBAO struct {
 		
 		Id   string `json:"id"`

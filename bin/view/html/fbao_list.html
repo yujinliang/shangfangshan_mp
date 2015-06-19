@@ -49,6 +49,23 @@
             });
             //--- 
         });
+        $(document).on("pagebeforecreate", "#fbao_do_order_page", function (e) {
+            $.ajax({
+                url:vHostDomain + "/getfbao_list_from_chest",
+                type:"get",
+                success:function (data) {
+                    console.log(data);
+                    var items = ''
+                    $.each(data, function (i, item) {
+                        items += "<li>" + "<a href=# data-fbao-id=" + item.id + ">" + item.name + "</a></li>";
+                    })
+                    $("#items_fbao_do_order_page").append(items).listview("refresh");
+                },
+                error:function (xhr) {
+                    $("#tips_fbao_do_order_page").text(xhr.statusText + xhr.resoponseText);
+                }
+            });
+        });
         $(document).on("click", "#fbao_do_order_page #q7_jieyuan_fabao_submit_btn", function (e) {
             e.preventDefault();
             $(this).attr("disabled","disabled");
@@ -153,10 +170,8 @@
             <div data-role="content">
                 <h4>法宝列表:</h4>
                 <div id="fbao_items" >
-                    <ul data-role="listview" data-inset=true>
-                        <li>安士全书 [1] 本</li>
-                        <li>念佛成佛 [1] 本</li>
-                        <li>因果故事 [1] 本</li>
+                    <span id="tips_fbao_do_order_page"></span>
+                    <ul id="items_fbao_do_order_page" data-role="listview" data-inset=true>
                     </ul>
                 </div>
                 <h4>快递信息:</h4>
