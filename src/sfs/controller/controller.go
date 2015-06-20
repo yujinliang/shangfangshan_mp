@@ -110,7 +110,7 @@ func HandleMenuViewEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXin
 	replyText := wx.ReplyText("打开网页事件!", r)
 	w.Write([]byte(replyText))
 }
-//test menu
+//menu
 func CreateMenu(wx *mp.WeiXin) {
 	
 
@@ -219,14 +219,6 @@ func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	w.Write(encoded)
 	
 }
-func D7_Apply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
-	//TODO:
-	//1. 首先通过手机号，与身份证号在数据库中查找， 用户是否已报过名了，且开七时间为未来时间。
-	//2. 若报过了， 则提示：不可重报.
-	//3. 若未报过名， 则写入数据库， 然后返回成功提示信息.
-	fmt.Fprintf(w, "%v", r.Form)
-}
 func Add2TreasureChest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	log.Printf("Add2TreasureChest: %s", ps.ByName("id"))
@@ -268,6 +260,7 @@ func GetFBaoDetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		Id   string `json:"id"`
 		Name string `json:"name"`
 		Desc string `json:"desc,omitempty"`
+		Tip  string	 `json:"tip,omitempty"`
 		ImageNames []string `json:"imagenames,omitempty"`
 		
 	}
@@ -276,6 +269,7 @@ func GetFBaoDetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	info.Id = fbao_id
 	info.Name = "念佛成佛"
 	info.Desc = "念佛是因， 成佛是果，不可思议！信愿行三者不可缺一也！若真是笃信，当即放下娑婆万有，志求西方，得生彼国！则此生不枉过也!!!"
+	info.Tip  = "一定要恭敬法宝，不可污损，不可丢弃，不可放在杂物处，不可与世间书放在一起，不可放在卧室及污秽之处，总之见法宝如见佛，必需恭敬之！阅读时要着装正式大方，洗手洗脸，刷牙，端身正坐，双手捧着读诵!"
 	info.ImageNames = []string{"1.jpg","2.jpg"}
 	
 	encoded, err := json.Marshal(&info)
@@ -389,16 +383,42 @@ func GetQ7List(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Write(encoded)
 	
 }
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
-	session, _ := SNs.SessionStart(w,r)
-	defer session.SessionRelease(w)
+func GetQ7DetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	openid := session.Get("openid")
+	q7_id := r.URL.Query().Get("q7_id")	
+	//---
+	type Q7_INFO struct {
+		
+		Id   		string `json:"id"`
+		Name 		string `json:"name"`
+		Desc 		string `json:"desc,omitempty"`
+		Q7LimitTip		string `json:"q7limit,omitempty"`
+		ImageNames 	[]string `json:"imagenames,omitempty"`
+		EnrollWay 	string `json:"enrollway"`
+		
+	}
 	
-	fmt.Fprintf(w, "%s", openid)
+	var info Q7_INFO
+	info.Id = q7_id
+	info.Name = "基础七"
+	info.Desc = "学习佛法六部曲，吃素戒杀，拜忏，诵经，放生，日行一善，念佛；使身心皆得大利益,坚持长久修行，必然当生得见阿弥陀佛，得生西方极乐世界!"
+	info.Q7LimitTip = "不接受生活不能自理者，有心脑血管等疾病者需家人陪同方可参加，并签署自愿免责协议."
+	info.ImageNames = []string{"1.jpg","2.jpg"}
+	info.EnrollWay = "光瑞师兄:13712348908"
+	
+	encoded, err := json.Marshal(&info)
+	if err != nil {
+		
+		fmt.Fprintf(w, "{}")
+		
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(encoded)
 	
 }
+
 func FBaoEntry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	redirect2targetWithOpenId(w, r, config.WebHostUrl + "/static/html/fbao_list.html")
