@@ -64,11 +64,13 @@ func HandleLinkMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinReques
 }
 func HandleSubscribeEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
+	//TODO:保存至关注者列表，用于群发消息.
 	replyText := wx.ReplyText("订阅事件!", r)
 	w.Write([]byte(replyText))
 }
 func HandleUnSubscribeEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
+	//TODO:从关注者列表中删除.
 	replyText := wx.ReplyText("取消订阅事件!", r)
 	w.Write([]byte(replyText))
 }
@@ -118,10 +120,7 @@ func CreateMenu(wx *mp.WeiXin) {
 	menu := &mp.Menu{make([]mp.MenuButton,3)}
 	menu.Buttons[0].Name = "我要打七"
 	menu.Buttons[0].Type = mp.ButtonTypeView
-	//generate auth url.
-	q7_OAuthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), config.WebHostUrl + "/q7_entry", "snsapi_base")
-	q7_url := q7_OAuthConfig.AuthCodeURL("q7_entry")
-	menu.Buttons[0].Url	 = q7_url
+	menu.Buttons[0].Url	 = config.WebHostUrl + "/static/html/q7_list.html"
 	//---
 	menu.Buttons[1].Name = "论坛"
 	menu.Buttons[1].Type = mp.ButtonTypeView
@@ -137,7 +136,7 @@ func CreateMenu(wx *mp.WeiXin) {
 	//---
 	menu.Buttons[2].SubButtons[1].Name = "联系道场"
 	menu.Buttons[2].SubButtons[1].Type = mp.ButtonTypeView
-	menu.Buttons[2].SubButtons[1].Url	= "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/static/html/contact_info.html"
+	menu.Buttons[2].SubButtons[1].Url	= config.WebHostUrl + "/static/html/contact_info.html"
 	
 	err := wx.CreateMenu(menu)
 	
@@ -392,7 +391,8 @@ func GetQ7DetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		Id   		string `json:"id"`
 		Name 		string `json:"name"`
 		Desc 		string `json:"desc,omitempty"`
-		Q7LimitTip		string `json:"q7limit,omitempty"`
+		Q7LimitTip	string `json:"q7limit,omitempty"`
+		Q7Plan		string `json:"q7plan"`
 		ImageNames 	[]string `json:"imagenames,omitempty"`
 		EnrollWay 	string `json:"enrollway"`
 		
@@ -405,6 +405,7 @@ func GetQ7DetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	info.Q7LimitTip = "不接受生活不能自理者，有心脑血管等疾病者需家人陪同方可参加，并签署自愿免责协议."
 	info.ImageNames = []string{"1.jpg","2.jpg"}
 	info.EnrollWay = "光瑞师兄:13712348908"
+	info.Q7Plan = "每月1号，9号，19号开七."
 	
 	encoded, err := json.Marshal(&info)
 	if err != nil {
@@ -422,11 +423,6 @@ func GetQ7DetailInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 func FBaoEntry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	redirect2targetWithOpenId(w, r, config.WebHostUrl + "/static/html/fbao_list.html")
-	
-}
-func Q7Entry(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
-	redirect2targetWithOpenId(w, r, config.WebHostUrl + "/static/html/q7_list.html")
 	
 }
 func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl string) {

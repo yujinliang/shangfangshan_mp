@@ -62,7 +62,6 @@ func main() {
 	controller.SNs = globalSessions
 	router := httprouter.New()
 	router.GET("/fbao_entry", controller.FBaoEntry)
-	router.GET("/q7_entry", controller.Q7Entry)
 	router.GET("/static/*filepath", controller.Static)
 	router.POST("/admin/sendmass_msg", controller.MassMsg2WeinXinUser)
 	router.POST("/do_forder", controller.JieYuanFABAO_Order)
@@ -71,6 +70,7 @@ func main() {
 	router.GET("/getfbao_detail", controller.GetFBaoDetailInfo)
 	router.GET("/getfbao_list_from_chest", controller.GetFBaoListFromChest)
 	router.GET("/get_q7_list", controller.GetQ7List)
+	router.GET("/get_q7_detail", controller.GetQ7DetailInfo)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)
