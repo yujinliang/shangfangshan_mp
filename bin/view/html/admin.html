@@ -12,6 +12,19 @@
             $(document).ready(function () {
                 $("#q7sendmassmsg").attr("action", vHostDomain + "/admin/sendmass_msg");
             });
+            //---
+            $(document).on("pageinit", "#q7_weixin_qunfa", function (e) {
+                $("#news_mass_tuwen").hide();
+            });
+            $(document).on("slidestop", "#mass_type_q7sendmassmsg", function (e) {
+                if($(this).val() == "text") {
+                    //hide all other field, besides text field.
+                    $("#news_mass_tuwen").hide();
+                } else {
+                    //show all hidden fields.
+                     $("#news_mass_tuwen").show();
+                }
+            });
         </script>
         <style type="text/css">
             div[data-role=fieldcontain] { border-bottom-width: 0px;}
@@ -42,8 +55,8 @@
                 <div id="q7_massText">
                     <form id="q7sendmassmsg" action="#" method="post">
                         <div data-role="fieldcontain">
-                            <label for=""><span>消息类型:</span></label>
-                            <select id="mass_type" name="mass_type" data-role="slider">
+                            <label for="mass_type_q7sendmassmsg"><span>消息类型:</span></label>
+                            <select id="mass_type_q7sendmassmsg" name="mass_type_q7sendmassmsg" data-role="slider">
                                 <option value="text" selected="selected">text</option>
                                 <option value="news">news</option>
                             </select>
@@ -52,6 +65,7 @@
                             <label for="text_mass_tuwen">内容(html):</label>
                             <textarea id="text_mass_tuwen" name="text_mass_tuwen"></textarea>
                         </div>
+                        <div id="news_mass_tuwen">
                         <div data-role="fieldcontain">
                             <label for="sourceurl_mass_tuwen">阅读原文URL:</label>
                             <input type="text" id="sourceurl_mass_tuwen" name="sourceurl_mass_tuwen" data-clear-btn="true" data-mini="true"/>
@@ -78,6 +92,7 @@
                                 <option value=1 selected="selected">是</option>
                                 <option value=0>否</option>
                             </select>
+                        </div>
                         </div>
                         <div data-role="fieldcontain">
                             <input type="submit" value="submit"/>
