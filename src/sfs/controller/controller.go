@@ -479,10 +479,8 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	
 	//2.到session中查找用户信息，找到则之前已登录， 否则为新登录.
-	session, _ := SNs.SessionStart(w,r)
-	defer session.SessionRelease(w)
-	user_name_in_session := session.Get("user_name")
-	if user_name_in_session != nil {
+
+	if checkAuth(w, r) == true {
 		
 		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin.html", http.StatusFound)
 		
@@ -492,6 +490,8 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		if true {
 			
 			//将管理员信息存入session.
+			session, _ := SNs.SessionStart(w,r)
+			defer session.SessionRelease(w)
 			session.Set("user_name", userName)
 			session.Set("admin_level", 0)
 			//--
@@ -503,6 +503,20 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			
 		}
 	}
+}
+func checkAuth(w http.ResponseWriter, r *http.Request) bool {
+	
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	user_name_in_session := session.Get("user_name")
+	if user_name_in_session != nil {
+		
+		return true
+		
+	}
+		
+	return false
+		
 }
 //admin end
 //微网站 end
