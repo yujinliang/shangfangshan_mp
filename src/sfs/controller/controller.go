@@ -487,7 +487,7 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	} else {
 		
 		//3. TODO:去数据库中，查找此user_name 并验证其密码,以及是否被disable.
-		if true {
+		if userName == "yu" {
 			
 			//将管理员信息存入session.
 			session, _ := SNs.SessionStart(w,r)
