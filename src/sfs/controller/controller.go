@@ -161,12 +161,19 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 //err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
 func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	//1.是否已登录。
+	if checkAuth(w, r) == false {
+		
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+		
+	}
+	//2.检查参数. 
 	r.ParseForm()
-	fmt.Print(r.FormValue("q7_text"))
+	fmt.Print(r.Form)
 	//---
 	if WX != nil {
 		
-		msgid, err := WX.SendTextByGroupID("0", r.FormValue("q7_text"), false)
+		msgid, err := WX.SendNewsByGroupID(groupId, mediaId, false)
 		if err != nil {
 			
 			fmt.Fprintf(w, "{msg_id:%s, err_code:%d, err_msg:%s}","" , 2, err)
