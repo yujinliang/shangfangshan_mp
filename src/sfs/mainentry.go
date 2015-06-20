@@ -71,6 +71,8 @@ func main() {
 	router.GET("/getfbao_list_from_chest", controller.GetFBaoListFromChest)
 	router.GET("/get_q7_list", controller.GetQ7List)
 	router.GET("/get_q7_detail", controller.GetQ7DetailInfo)
+	//admin---
+	router.POST("/login", controller.Login)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)

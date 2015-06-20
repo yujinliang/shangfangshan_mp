@@ -465,5 +465,44 @@ func redirect2targetWithOpenId(w http.ResponseWriter, r *http.Request, targetUrl
 	http.Redirect(w, r, targetUrl + "?openid=" + openid, http.StatusFound)
 	
 }
-
+//admin start
+func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	//1.检查输入参数
+	r.ParseForm()
+	userName := r.FormValue("user_name")
+	userPwd	 := r.FormValue("user_pwd")
+	if len(userName) <= 0 || len(userPwd) <= 0 {
+		
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		
+	}
+	
+	//2.到session中查找用户信息，找到则之前已登录， 否则为新登录.
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	user_name_in_session := session.Get("user_name")
+	if user_name_in_session != nil {
+		
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin.html", http.StatusFound)
+		
+	} else {
+		
+		//3. TODO:去数据库中，查找此user_name 并验证其密码,以及是否被disable.
+		if true {
+			
+			//将管理员信息存入session.
+			session.Set("user_name", userName)
+			session.Set("admin_level", 0)
+			//--
+			http.Redirect(w, r, config.WebHostUrl + "/static/html/admin.html", http.StatusFound)
+			
+		} else {
+			
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			
+		}
+	}
+}
+//admin end
 //微网站 end
