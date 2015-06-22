@@ -5,7 +5,7 @@
     
 ##编译
     check下来之后， 请在本地重建目录结构： 将sfs整体拷贝到本地./src目录下， 再将bin/目录下的内容拷贝到本地./bin。
-    进入src/sfs， 直接go build -a -o ../../bin/web 即可， 当然在编译之前请在src下go get                                  必要的库：https://github.com/yujinliang/wechat,
+    进入src/sfs， 直接go build -a -o ../../bin/web 即可， 当然在编译之前请在src下go get必要的库：https://github.com/yujinliang/wechat,
     github.com/julienschmidt/httprouter , github.com/codegangsta/negroni , github.com/astaxie/beego/session
       
 ##进展
