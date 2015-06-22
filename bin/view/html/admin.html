@@ -83,15 +83,21 @@
                             <input type="text" id="digest_mass_tuwen" name="digest_mass_tuwen" data-clear-btn="true" data-mini="true"/>
                         </div>
                         <div data-role="fieldcontain">
-                            <label for="thumbpic_mass_tuwen">缩略图:</label>
+                            <label for="thumbpic_mass_tuwen">缩略图(<64k):</label>
                             <input type="file" id="thumbpic_mass_tuwen" name="thumbpic_mass_tuwen" data-clear-btn="true" data-mini="true"/>
                         </div>
                         <div data-role="fieldcontain">
-                            <label for="showcoverpic_mass_tuwen"><span>显示封面:</span></label>
-                            <select id="showcoverpic_mass_tuwen" name="showcoverpic_mass_tuwen" data-role="slider">
-                                <option value=1 selected="selected">是</option>
-                                <option value=0>否</option>
-                            </select>
+                            <fieldset data-role="controlgroup" data-type="horizontal">
+                                <legend>选项:</legend>
+                                <select id="showcoverpic_mass_tuwen" name="showcoverpic_mass_tuwen" data-role="slider">
+                                    <option value=1 selected="selected">封面[是]</option>
+                                    <option value=0>封面[否]</option>
+                                </select>
+                                <select id="toall_mass_tuwen" name="toall_mass_tuwen" data-role="slider">
+                                    <option value=1 selected="selected">历史[是]</option>
+                                    <option value=0>历史[否]</option>
+                                </select>
+                            </fieldset>
                         </div>
                         </div>
                         <div data-role="fieldcontain">
