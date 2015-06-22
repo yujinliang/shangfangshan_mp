@@ -3,9 +3,13 @@ package controller
 
 import (
 	
-
+	//"io"
+	//"os"
+	"bufio"
 	"log"
 	"fmt"
+	"strconv"
+	"strings"
 	"sfs/config"
 	"net/http"
 	"encoding/json"
@@ -162,32 +166,139 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	//1.是否已登录。
-	if checkAuth(w, r) == false {
+//	if checkAuth(w, r) == false {
 		
-		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+//		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
 		
-	}
+//	}
 	//2.检查参数. 
-	r.ParseForm()
-	fmt.Print(r.Form)
-	//---
-	if WX != nil {
+	r.ParseMultipartForm(10 << 20)
+	msg_type := r.FormValue("mass_type_q7sendmassmsg")
+	if msg_type == config.WeiXinMassMsgNews {//news type.
 		
-		msgid, err := WX.SendNewsByGroupID(groupId, mediaId, false)
-		if err != nil {
+		title := r.FormValue("title_mass_tuwen")
+		content := r.FormValue("text_mass_tuwen")
+		if len(title) <= 0 || len(content) <= 0 {
 			
-			fmt.Fprintf(w, "{msg_id:%s, err_code:%d, err_msg:%s}","" , 2, err)
-			
-		} else {
-			
-			fmt.Fprintf(w, "{msg_id:%s, err_code:%d, err_msg:%s}", msgid, 0, "SUCCESS")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No title or content!")
+			return
 			
 		}
 		
-			
-	} else {
+		author := r.FormValue("author_mass_tuwen")
+		digest := r.FormValue("digest_mass_tuwen")
+		content_source_url := r.FormValue("sourceurl_mass_tuwen")	
+		show_pic := r.FormValue("showcoverpic_mass_tuwen")
+		is_to_all := r.FormValue("toall_mass_tuwen")
+	
+		//upload file handle block.
+		file, handler, err := r.FormFile("thumbpic_mass_tuwen")
+		if err != nil {
 		
-		fmt.Fprintf(w, "{msg_id:%s, err_code:%d, err_msg:%s}","", 1, "FAILED")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 1, err)
+			return
+		
+		}
+		defer file.Close()
+	
+		//3.通过微信素材管理上传thumb, 成功后获得mediaId, thumb, image
+		if WX != nil {
+		
+			mediaId, err := WX.UploadTmpMedia("image", strings.ToLower(handler.Filename), bufio.NewReader(file))
+			if err != nil {
+			
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 2, err)
+				return
+			
+			}
+			//4. 上传图文消息.
+			var news mp.MPNews;
+			news.Title = title
+			news.ThumbMediaId = mediaId
+			news.Author = author
+			news.Digest = digest
+			news.Content = content
+			news.ContentSourceUrl = content_source_url
+			picN, err := strconv.Atoi(show_pic)
+			if err != nil {
+			
+				picN = 1
+			
+			}
+			news.ShowCoverPic = int8(picN)
+			materialId, err := WX.UploadNews([]mp.MPNews{news})
+			if err != nil {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 2, err)
+				return
+				
+			}
+			
+			if len(materialId) <= 0 {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,"No MaterialId")
+				return
+				
+			}
+			
+			is_to_all_bool, err := strconv.ParseBool(is_to_all)
+			if err != nil {
+				
+				is_to_all_bool = false
+				
+			}
+			msgid, err := WX.SendNewsByGroupID(config.WeiXinDefaultUserGroupId, materialId, is_to_all_bool)
+			if err != nil {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+				return
+				
+			}
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+			return
+			
+		}
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+		return
+		
+
+	} else { //just text message.
+		
+		content := r.FormValue("text_mass_tuwen")
+		if len(content) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Content!")
+			return
+			
+		}
+		
+		if WX != nil {
+			
+			is_to_all := r.FormValue("toall_mass_tuwen")
+			is_to_all_bool, err := strconv.ParseBool(is_to_all)
+			if err != nil {
+				
+				is_to_all_bool = false
+				
+			}
+			
+			msgid, err := WX.SendTextByGroupID(config.WeiXinDefaultUserGroupId, content, is_to_all_bool)
+			if err != nil {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+				return
+				
+			}
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+			return
+			
+		}
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+		return
 		
 	}
 

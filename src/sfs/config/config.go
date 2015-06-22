@@ -11,5 +11,9 @@ const (
 	StaticResourcesDir = "/Users/yujinliang/shangfangshan_mp/bin/view"
 	//--
 	WebHostUrl = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi"
+	//--
+	WeiXinMassMsgNews = "news"
+	WeiXinDefaultUserGroupId = "0"
+	
 )
 
