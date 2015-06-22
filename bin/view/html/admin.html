@@ -53,7 +53,7 @@
             </div>
             <div data-role="content">
                 <div id="q7_massText">
-                    <form id="q7sendmassmsg" action="#" method="post" enctype="multipart/form-data">
+                    <form id="q7sendmassmsg" action="#" method="post" enctype="multipart/form-data" target="result_mass_send_in_iframe">
                         <div data-role="fieldcontain">
                             <label for="mass_type_q7sendmassmsg"><span>消息类型:</span></label>
                             <select id="mass_type_q7sendmassmsg" name="mass_type_q7sendmassmsg" data-role="slider">
@@ -109,6 +109,7 @@
                         </div>
                     </form>
                 </div>
+                <iframe id="result_mass_send_in_iframe" name="result_mass_send_in_iframe"></iframe>
             </div>
             <div data-role="footer"  data-position="fixed" data-id="footer">
                <div data-role="navbar">
