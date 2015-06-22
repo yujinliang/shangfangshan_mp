@@ -171,6 +171,8 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 //		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
 		
 //	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//2.检查参数. 
 	r.ParseMultipartForm(10 << 20)
 	msg_type := r.FormValue("mass_type_q7sendmassmsg")
