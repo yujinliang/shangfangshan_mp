@@ -255,6 +255,7 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 				
 			}
 			
+			//TODO: 将msgId写入数据库， 以供统计.
 			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
 			return
 			
