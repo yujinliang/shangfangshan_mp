@@ -27,6 +27,11 @@
             });
             $(document).on("click", "#preview_mass_tuwen", function (e) {
                 e.preventDefault();
+                openid = $('#openid_preview_mass_tuwen').val();
+                if( !openid.trim() || openid.length <= 0) {
+                    console.log("openid: " + openid);
+                    return;
+                }
                 $.ajax({
                     url:vHostDomain + "/admin/preview_mass_msg",
                     type:'get',
@@ -136,6 +141,7 @@
                     </form>
                 </div>
                 <div data-role="controlgroup">
+                    <input type="text" id="openid_preview_mass_tuwen" data-clear-btn="true" data-mini="true" placeholder="your openid for preview"/>
                     <a id="preview_mass_tuwen" href="#" data-role="button">预览</a>
                     <a id="confirm_mass_tuwen" href="#" data-role="button">确认群发</a>
                 </div>
