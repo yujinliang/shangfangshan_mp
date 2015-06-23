@@ -64,7 +64,7 @@ func main() {
 	router.GET("/fbao_entry", controller.FBaoEntry)
 	router.GET("/static/*filepath", controller.Static)
 	router.POST("/admin/upload_mpnews", controller.UploadMPNews)
-	router.GET("/admin/preview_mass_msg", controller.PreviewMassMessage)
+	router.POST("/admin/preview_mass_msg", controller.PreviewMassMessage)
 	router.GET("/admin/confirm_send_mass_msg", controller.ConfirmSendMassMessage)
 	router.POST("/do_forder", controller.JieYuanFABAO_Order)
 	router.GET("/chest/:id",controller.Add2TreasureChest)

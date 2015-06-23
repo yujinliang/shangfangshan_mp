@@ -11,6 +11,8 @@
             
             $(document).ready(function () {
                 $("#q7sendmassmsg").attr("action", vHostDomain + "/admin/upload_mpnews");
+                $("#preview_form_mass").attr("action", vHostDomain + "/admin/preview_mass_msg")
+                $("#confirm_mass_tuwen").attr("href", vHostDomain + "/admin/confirm_send_mass_msg");
             });
             //---
             $(document).on("pageinit", "#q7_weixin_qunfa", function (e) {
@@ -24,37 +26,6 @@
                     //show all hidden fields.
                      $("#news_mass_tuwen").show();
                 }
-            });
-            $(document).on("click", "#preview_mass_tuwen", function (e) {
-                e.preventDefault();
-                openid = $('#openid_preview_mass_tuwen').val();
-                if( !openid.trim() || openid.length <= 0) {
-                    console.log("openid: " + openid);
-                    return;
-                }
-                $.ajax({
-                    url:vHostDomain + "/admin/preview_mass_msg?openid=" + openid,
-                    type:'get',
-                    success:function (data) {
-                        $('#json_result_mass_send_in_iframe').text(data);
-                    },
-                    error:function (xhr) {
-                        $('#json_result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
-                    }
-                });
-            });
-            $(document).on("click", "#confirm_mass_tuwen", function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url:vHostDomain + "/admin/confirm_send_mass_msg",
-                    type:'get',
-                    success:function (data) {
-                        $('#json_result_mass_send_in_iframe').text(data);
-                    },
-                    error:function (xhr) {
-                        $('#json_result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
-                    }
-                });
             });
         </script>
         <style type="text/css">
@@ -140,12 +111,12 @@
                         </div>
                     </form>
                 </div>
-                <div data-role="controlgroup">
-                    <input type="text" id="openid_preview_mass_tuwen" data-clear-btn="true" data-mini="true" placeholder="your openid for preview"/>
-                    <a id="preview_mass_tuwen" href="#" data-role="button">预览</a>
-                    <a id="confirm_mass_tuwen" href="#" data-role="button">确认群发</a>
-                </div>
-                <div id="json_result_mass_send_in_iframe">
+                <div id="final_action_trigger">
+                    <form action="#" method="post" id="preview_form_mass" name="preview_form_mass" target="result_mass_send_in_iframe">
+                        <input type="text" id="openid_preview_mass_tuwen" name="openid_preview_mass_tuwen" data-clear-btn="true" data-mini="true" placeholder="your openid for preview" required="required"/>
+                        <input type="submit" value="预览"/>
+                    </form>
+                    <a id="confirm_mass_tuwen" href="#" data-role="button" target="result_mass_send_in_iframe">确认群发</a>
                 </div>
                 <iframe id="result_mass_send_in_iframe" name="result_mass_send_in_iframe"style="width:90% height 120px; border-style:none"></iframe>
             </div>

@@ -178,7 +178,7 @@ func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	
 	//2. check openid.
-	openid := r.URL.Query().Get("openid")
+	openid := r.FormValue("openid_preview_mass_tuwen")
 	if len(openid) <= 0 {
 		
 		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Openid for Preview!")
