@@ -162,15 +162,219 @@ func Static(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		
 
 }
-//err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
-func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	//1.是否已登录。
-//	if checkAuth(w, r) == false {
+	if checkAuth(w, r) == false {
 		
-//		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
 		
-//	}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//2. check mediaid in current sesson.
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	msg_type_i := session.Get("mass_type_current")
+	if msg_type_i == nil {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 1p")
+		return
+			
+	}
+	msg_type_s, ok := msg_type_i.(string)
+	if !ok || len(msg_type_s) <= 0 {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 2p")
+		return
+		
+	}
+		
+	if msg_type_s == config.WeiXinMassMsgNews {//mpnews.		
+	
+		materialId := ""
+		materialId_i := session.Get("mp_news_mediaid")
+		if materialId_i == nil {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 1p")
+			return
+			
+		}
+		materialId, ok := materialId_i.(string)
+		if !ok || len(materialId) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 2p")
+			return
+			
+		}
+		
+		msgid, err := WX.PreviewNews("openid", materialId)
+		if err != nil {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+			return
+				
+		}
+		//TODO: 将msgid， 时间，写入数据库以备统计.
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+		return
+	
+	} else {//text.
+	
+		content_i := session.Get("text_content_mass")
+		if content_i == nil {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Content, 1p")
+			return
+			
+		}
+		content , ok := content_i.(string)
+		if !ok || len(content) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Content, 2p")
+			return
+			
+		}
+		
+		if WX != nil {
+			
+			msgid, err := WX.PreviewText("openid", content)
+			if err != nil {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+				return
+				
+			}
+			
+			//TODO: 将msgId写入数据库， 以供统计.
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+			return
+			
+		}
+			
+	}
+	
+	fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+	return	
+	
+}
+func ConfirmSendMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	//1.是否已登录。
+	if checkAuth(w, r) == false {
+		
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+		
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//2. check mediaid in current sesson.
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	msg_type_i := session.Get("mass_type_current")
+	if msg_type_i == nil {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 1p")
+		return
+			
+	}
+	msg_type_s, ok := msg_type_i.(string)
+	if !ok || len(msg_type_s) <= 0 {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 2p")
+		return
+		
+	}
+	var is_to_all_bool bool = false
+	is_to_all_i := session.Get("is_to_all_bool")
+	if is_to_all_i != nil {
+				
+		is_to_all_bool, ok = is_to_all_i.(bool)
+		if !ok {
+				
+			is_to_all_bool = false
+				
+		}
+				
+	}
+		
+	if msg_type_s == config.WeiXinMassMsgNews {//mpnews.		
+	
+		materialId := ""
+		materialId_i := session.Get("mp_news_mediaid")
+		if materialId_i == nil {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 1p")
+			return
+			
+		}
+		materialId, ok := materialId_i.(string)
+		if !ok || len(materialId) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 2p")
+			return
+			
+		}
+		
+		msgid, err := WX.SendNewsByGroupID(config.WeiXinDefaultUserGroupId, materialId, is_to_all_bool)
+		if err != nil {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+			return
+				
+		}
+		//TODO: 将msgid， 时间，写入数据库以备统计.
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+		return
+	
+	} else {//text.
+	
+		content_i := session.Get("text_content_mass")
+		if content_i == nil {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Content, 1p")
+			return
+			
+		}
+		content , ok := content_i.(string)
+		if !ok || len(content) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Content, 2p")
+			return
+			
+		}
+		
+		if WX != nil {
+			
+			msgid, err := WX.SendTextByGroupID(config.WeiXinDefaultUserGroupId, content, is_to_all_bool)
+			if err != nil {
+				
+				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
+				return
+				
+			}
+			
+			//TODO: 将msgId写入数据库， 以供统计.
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+			return
+			
+		}
+			
+	}
+	
+	fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+	return	
+		
+}
+//err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
+func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	//1.是否已登录。
+	if checkAuth(w, r) == false {
+		
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+		
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//2.检查参数. 
@@ -242,33 +446,26 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 				return
 				
 			}
-			
 			is_to_all_bool, err := strconv.ParseBool(is_to_all)
 			if err != nil {
 				
 				is_to_all_bool = false
 				
-			}
-			msgid, err := WX.SendNewsByGroupID(config.WeiXinDefaultUserGroupId, materialId, is_to_all_bool)
-			if err != nil {
-				
-				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
-				return
-				
-			}
+			}		
+			//将materialId写入session.
+			session, _ := SNs.SessionStart(w,r)
+			defer session.SessionRelease(w)
+			session.Set("mp_news_mediaid", materialId)
+			session.Set("is_to_all_bool", is_to_all_bool)
+			session.Set("mass_type_current", config.WeiXinMassMsgNews)
 			
-			//TODO: 将msgId写入数据库， 以供统计.
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Upload Success: " + materialId)
 			return
 			
 		}
 		
-		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
-		return
-		
-
-	} else { //just text message.
-		
+	} else {
+		//just text.
 		content := r.FormValue("text_mass_tuwen")
 		if len(content) <= 0 {
 			
@@ -276,36 +473,31 @@ func MassMsg2WeinXinUser(w http.ResponseWriter, r *http.Request, ps httprouter.P
 			return
 			
 		}
-		
-		if WX != nil {
 			
-			is_to_all := r.FormValue("toall_mass_tuwen")
-			is_to_all_bool, err := strconv.ParseBool(is_to_all)
-			if err != nil {
+		is_to_all := r.FormValue("toall_mass_tuwen")
+		is_to_all_bool, err := strconv.ParseBool(is_to_all)
+		if err != nil {
 				
 				is_to_all_bool = false
 				
-			}
-			
-			msgid, err := WX.SendTextByGroupID(config.WeiXinDefaultUserGroupId, content, is_to_all_bool)
-			if err != nil {
-				
-				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
-				return
-				
-			}
-			
-			//TODO: 将msgId写入数据库， 以供统计.
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: " + msgid)
-			return
-			
 		}
+			
+			
+		//将text msg写入session
+		session, _ := SNs.SessionStart(w,r)
+		defer session.SessionRelease(w)
+		session.Set("text_content_mass", content)
+		session.Set("is_to_all_bool", is_to_all_bool)
+		session.Set("mass_type_current", config.WeiXinMassMsgText)
 		
-		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Success: Saved Text Msg")
 		return
-		
+	
 	}
-
+	
+	fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,http.StatusText(http.StatusInternalServerError))
+	return	
+	
 }
 func JieYuanFABAO_Order(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
@@ -628,16 +820,17 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 func checkAuth(w http.ResponseWriter, r *http.Request) bool {
 	
-	session, _ := SNs.SessionStart(w,r)
-	defer session.SessionRelease(w)
-	user_name_in_session := session.Get("user_name")
-	if user_name_in_session != nil {
+//	session, _ := SNs.SessionStart(w,r)
+//	defer session.SessionRelease(w)
+//	user_name_in_session := session.Get("user_name")
+//	if user_name_in_session != nil {
 		
-		return true
+//		return true
 		
-	}
+//	}
 		
-	return false
+//	return false
+	return true
 		
 }
 //admin end

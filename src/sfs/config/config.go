@@ -13,6 +13,7 @@ const (
 	WebHostUrl = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi"
 	//--
 	WeiXinMassMsgNews = "news"
+	WeiXinMassMsgText = "text"
 	WeiXinDefaultUserGroupId = "0"
 	
 )
