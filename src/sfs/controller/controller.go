@@ -205,22 +205,36 @@ func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		
 	if msg_type_s == config.WeiXinMassMsgNews {//mpnews.		
 	
-		materialId := ""
-		materialId_i := session.Get("mp_news_mediaid")
-		if materialId_i == nil {
+		//upload mpnews.
+		mpnews_slice_i := session.Get("mp_news_slice")
+		if mpnews_slice_i == nil {
 			
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 1p")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 1p")
 			return
 			
 		}
-		materialId, ok := materialId_i.(string)
-		if !ok || len(materialId) <= 0 {
+		mpnews_slice, ok := mpnews_slice_i.([]mp.MPNews)
+		if !ok || len(mpnews_slice) <= 0 {
 			
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 2p")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 2p")
 			return
 			
 		}
-		
+		materialId, err := WX.UploadNews(mpnews_slice)
+		if err != nil {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 2, err)
+			return
+				
+		}
+			
+		if len(materialId) <= 0 {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,"No MaterialId, Upload MPNews Failed!")
+			return
+				
+		}
+		//--
 		msgid, err := WX.PreviewNews(openid, materialId)
 		if err != nil {
 				
@@ -313,20 +327,34 @@ func ConfirmSendMassMessage(w http.ResponseWriter, r *http.Request, ps httproute
 		
 	if msg_type_s == config.WeiXinMassMsgNews {//mpnews.		
 	
-		materialId := ""
-		materialId_i := session.Get("mp_news_mediaid")
-		if materialId_i == nil {
+		//upload mpnews.
+		mpnews_slice_i := session.Get("mp_news_slice")
+		if mpnews_slice_i == nil {
 			
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 1p")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 1p")
 			return
 			
 		}
-		materialId, ok := materialId_i.(string)
-		if !ok || len(materialId) <= 0 {
+		mpnews_slice, ok := mpnews_slice_i.([]mp.MPNews)
+		if !ok || len(mpnews_slice) <= 0 {
 			
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News MediaId, 2p")
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 2p")
 			return
 			
+		}
+		materialId, err := WX.UploadNews(mpnews_slice)
+		if err != nil {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 2, err)
+			return
+				
+		}
+			
+		if len(materialId) <= 0 {
+				
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,"No MaterialId, Upload MPNews Failed!")
+			return
+				
 		}
 		
 		msgid, err := WX.SendNewsByGroupID(config.WeiXinDefaultUserGroupId, materialId, is_to_all_bool)
@@ -430,7 +458,7 @@ func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 				return
 			
 			}
-			//4. 上传图文消息.
+			//4. 保存图文消息至session.
 			var news mp.MPNews;
 			news.Title = title
 			news.ThumbMediaId = mediaId
@@ -445,20 +473,7 @@ func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 			
 			}
 			news.ShowCoverPic = int8(picN)
-			materialId, err := WX.UploadNews([]mp.MPNews{news})
-			if err != nil {
-				
-				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}", 2, err)
-				return
-				
-			}
-			
-			if len(materialId) <= 0 {
-				
-				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,"No MaterialId")
-				return
-				
-			}
+
 			is_to_all_bool, err := strconv.ParseBool(is_to_all)
 			if err != nil {
 				
@@ -468,11 +483,29 @@ func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 			//将materialId写入session.
 			session, _ := SNs.SessionStart(w,r)
 			defer session.SessionRelease(w)
-			session.Set("mp_news_mediaid", materialId)
 			session.Set("is_to_all_bool", is_to_all_bool)
 			session.Set("mass_type_current", config.WeiXinMassMsgNews)
+			//检查session中是否已存入多个图文消息.
+			mpnews_slice_i := session.Get("mp_news_slice")
+			if mpnews_slice_i == nil {
+				
+				session.Set("mp_news_slice", []mp.MPNews{news})
+				
+			} else {
+				
+				mpnews_slice, ok := mpnews_slice_i.([]mp.MPNews)
+				if ok && mpnews_slice != nil {
+					
+					session.Set("mp_news_slice" ,append(mpnews_slice, news))
+					
+				} else {
+					
+					session.Set("mp_news_slice", []mp.MPNews{news})
+					
+				}
+			}
 			
-			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Upload Success: " + materialId)
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Saved Success: ")
 			return
 			
 		}
