@@ -10,7 +10,7 @@
             var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
             
             $(document).ready(function () {
-                $("#q7sendmassmsg").attr("action", vHostDomain + "/admin/sendmass_msg");
+                $("#q7sendmassmsg").attr("action", vHostDomain + "/admin/upload_mpnews");
             });
             //---
             $(document).on("pageinit", "#q7_weixin_qunfa", function (e) {
@@ -24,6 +24,32 @@
                     //show all hidden fields.
                      $("#news_mass_tuwen").show();
                 }
+            });
+            $(document).on("click", "#preview_mass_tuwen", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url:vHostDomain + "/admin/preview_mass_msg",
+                    type:'get',
+                    success:function (data) {
+                        $('#result_mass_send_in_iframe').text(data);
+                    },
+                    error:function (xhr) {
+                        $('#result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
+                    }
+                });
+            });
+            $(document).on("click", "#confirm_mass_tuwen", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url:vHostDomain + "/admin/confirm_send_mass_msg",
+                    type:'get',
+                    success:function (data) {
+                        $('#result_mass_send_in_iframe').text(data);
+                    },
+                    error:function (xhr) {
+                        $('#result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
+                    }
+                });
             });
         </script>
         <style type="text/css">
@@ -105,9 +131,13 @@
                             </fieldset>
                         </div>
                         <div data-role="fieldcontain">
-                            <input type="submit" value="submit"/>
+                            <input type="submit" value="保存"/>
                         </div>
                     </form>
+                </div>
+                <div data-role="controlgroup">
+                    <a id="preview_mass_tuwen" href="#" data-role="button">预览</a>
+                    <a id="confirm_mass_tuwen" href="#" data-role="button">确认群发</a>
                 </div>
                 <iframe id="result_mass_send_in_iframe" name="result_mass_send_in_iframe"style="width:90% height 120px; border-style:none"></iframe>
             </div>
