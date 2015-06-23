@@ -30,15 +30,19 @@ var (
 )
 func HandleVoiceMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 		
-	replyText := wx.ReplyText("http://http://webapp.jinliangyu_weinxin_dev.tunnel.mobi/hello", r)
+	replyText := wx.ReplyText("语音消息！", r)
 	w.Write([]byte(replyText))
 
 }
 func HandleTextMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
-	q7_OAuthConfig := oauth2web.NewOAuth2Config(wx.GetAppId(), wx.GetAppSecret(), config.WebHostUrl + "/q7_entry", "snsapi_base")
-	q7_url := q7_OAuthConfig.AuthCodeURL("q7_entry")
-	replyText := wx.ReplyText(q7_url, r)
+	replyText := wx.ReplyText("欢迎您！", r)
+	if strings.Contains(r.Content, "openid") {
+		
+		replyText = wx.ReplyText( r.FromUserName ,r)
+		
+	} 
+	
 	//data, _ := wx.MakeEncryptResponse([]byte(replyText), timestamp, nonce)
 	w.Write([]byte(replyText))
 	
@@ -69,13 +73,13 @@ func HandleLinkMsg(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinReques
 func HandleSubscribeEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
 	//TODO:保存至关注者列表，用于群发消息.
-	replyText := wx.ReplyText("订阅事件!", r)
+	replyText := wx.ReplyText("欢迎您，感谢您关注我们!", r)
 	w.Write([]byte(replyText))
 }
 func HandleUnSubscribeEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
 	
 	//TODO:从关注者列表中删除.
-	replyText := wx.ReplyText("取消订阅事件!", r)
+	replyText := wx.ReplyText("希望再来!", r)
 	w.Write([]byte(replyText))
 }
 func HandleScanEvent(wx *mp.WeiXin, w http.ResponseWriter, r *request.WeiXinRequest, timestamp, nonce string) {
