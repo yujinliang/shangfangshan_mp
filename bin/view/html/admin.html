@@ -36,10 +36,10 @@
                     url:vHostDomain + "/admin/preview_mass_msg?openid=" + openid,
                     type:'get',
                     success:function (data) {
-                        $('#result_mass_send_in_iframe').text(data);
+                        $('#json_result_mass_send_in_iframe').text(data);
                     },
                     error:function (xhr) {
-                        $('#result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
+                        $('#json_result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
                     }
                 });
             });
@@ -49,10 +49,10 @@
                     url:vHostDomain + "/admin/confirm_send_mass_msg",
                     type:'get',
                     success:function (data) {
-                        $('#result_mass_send_in_iframe').text(data);
+                        $('#json_result_mass_send_in_iframe').text(data);
                     },
                     error:function (xhr) {
-                        $('#result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
+                        $('#json_result_mass_send_in_iframe').text(xhr.statusText + xhr.resoponseText);
                     }
                 });
             });
@@ -144,6 +144,8 @@
                     <input type="text" id="openid_preview_mass_tuwen" data-clear-btn="true" data-mini="true" placeholder="your openid for preview"/>
                     <a id="preview_mass_tuwen" href="#" data-role="button">预览</a>
                     <a id="confirm_mass_tuwen" href="#" data-role="button">确认群发</a>
+                </div>
+                <div id="json_result_mass_send_in_iframe">
                 </div>
                 <iframe id="result_mass_send_in_iframe" name="result_mass_send_in_iframe"style="width:90% height 120px; border-style:none"></iframe>
             </div>
