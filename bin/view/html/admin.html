@@ -33,7 +33,7 @@
                     return;
                 }
                 $.ajax({
-                    url:vHostDomain + "/admin/preview_mass_msg",
+                    url:vHostDomain + "/admin/preview_mass_msg?openid=" + openid,
                     type:'get',
                     success:function (data) {
                         $('#result_mass_send_in_iframe').text(data);

@@ -172,7 +172,16 @@ func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	//2. check mediaid in current sesson.
+	
+	//2. check openid.
+	openid := r.URL.Query().Get("openid")
+	if len(openid) <= 0 {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Openid for Preview!")
+		return
+		
+	}
+	//3. check mediaid in current sesson.
 	session, _ := SNs.SessionStart(w,r)
 	defer session.SessionRelease(w)
 	msg_type_i := session.Get("mass_type_current")
@@ -208,7 +217,7 @@ func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 			
 		}
 		
-		msgid, err := WX.PreviewNews("openid", materialId)
+		msgid, err := WX.PreviewNews(openid, materialId)
 		if err != nil {
 				
 			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
@@ -238,7 +247,7 @@ func PreviewMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		
 		if WX != nil {
 			
-			msgid, err := WX.PreviewText("openid", content)
+			msgid, err := WX.PreviewText(openid, content)
 			if err != nil {
 				
 				fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",2 ,err)
