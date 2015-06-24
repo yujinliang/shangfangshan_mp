@@ -13,6 +13,7 @@
                 $("#q7sendmassmsg").attr("action", vHostDomain + "/admin/upload_mpnews");
                 $("#preview_form_mass").attr("action", vHostDomain + "/admin/preview_mass_msg")
                 $("#confirm_mass_tuwen").attr("href", vHostDomain + "/admin/confirm_send_mass_msg");
+                $("#delete_msg_mass_tuwen").attr("href", vHostDomain + "/admin/delete_recent_mass_msg");
             });
             //---
             $(document).on("pageinit", "#q7_weixin_qunfa", function (e) {
@@ -108,6 +109,7 @@
                         </div>
                         <div data-role="fieldcontain">
                             <input type="submit" value="保存"/>
+                            <a id="delete_msg_mass_tuwen" data-role="button" href="#" target="result_mass_send_in_iframe">删除最近保存</a>
                         </div>
                     </form>
                 </div>

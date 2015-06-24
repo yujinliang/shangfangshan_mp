@@ -407,6 +407,9 @@ func ConfirmSendMassMessage(w http.ResponseWriter, r *http.Request, ps httproute
 	return	
 		
 }
+func DeleteRecentSavedMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+}
 //err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
 func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
