@@ -409,6 +409,63 @@ func ConfirmSendMassMessage(w http.ResponseWriter, r *http.Request, ps httproute
 }
 func DeleteRecentSavedMassMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	//1.是否已登录。
+	if checkAuth(w, r) == false {
+		
+		http.Redirect(w, r, config.WebHostUrl + "/static/html/admin_login.html", http.StatusFound)
+		
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//2. check mediaid in current sesson.
+	session, _ := SNs.SessionStart(w,r)
+	defer session.SessionRelease(w)
+	msg_type_i := session.Get("mass_type_current")
+	if msg_type_i == nil {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 1p")
+		return
+			
+	}
+	msg_type_s, ok := msg_type_i.(string)
+	if !ok || len(msg_type_s) <= 0 {
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No Message Type! 2p")
+		return
+		
+	}
+	if msg_type_s == config.WeiXinMassMsgNews {//mpnews.
+	
+		mpnews_slice_i := session.Get("mp_news_slice")
+		if mpnews_slice_i == nil {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 1p")
+			return
+			
+		}
+		mpnews_slice, ok := mpnews_slice_i.([]mp.MPNews)
+		if !ok || len(mpnews_slice) <= 0 {
+			
+			fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",1 ,"No News, 2p")
+			return
+			
+		}
+		
+		mpnews_slice = mpnews_slice[:len(mpnews_slice) - 1]
+		session.Set("mp_news_slice", mpnews_slice)
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Sucess: Delete Recent Saved News")
+		return
+				
+	} else {
+		
+		session.Set("text_content_mass", nil)
+		
+		fmt.Fprintf(w, "{errcode:%d, errmsg:%s}",0 ,"Sucess: Delete Recent Saved Text")
+		return
+		
+	}
+	
 }
 //err_code: [0:成功， 1:我方服务器问题，2: 微信方问题]
 func UploadMPNews(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
