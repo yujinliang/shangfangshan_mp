@@ -29,19 +29,21 @@
                 }
             });
             //管理员---
-            $(document).on("pageinit", "#q7_guanliyuan", function (e) {
-                $("#block_m_pwd_q7_guanliyuan").hide();
-            });
-            $(document).on("slidestop", "#operation_q7_guanliyuan", function (e) {
-                if($(this).val() == "pwd_modify") {
-                    //hide all other field, besides text field.
-                    $("#block_createmanager_q7_guanliyuan").hide();
-                    $("#block_m_pwd_q7_guanliyuan").show();
-                } else {
-                    //show all hidden fields.
-                    $("#block_createmanager_q7_guanliyuan").show();
-                    $("#block_m_pwd_q7_guanliyuan").hide();
-                }
+            $(document).on("click", "#q7_guanliyuan #confirm_m_pwd_q7_guanliyuan", function (e) {
+                e.preventDefault();
+                var formObject = $("#q7_guanliyuan #m_pwd_q7_guanliyuan");
+                var formData = formObject.serialize();
+                $.ajax({
+                    url: vHostDomain + "/admin/modify_pwd",
+                    type:"post",
+                    data:formData,
+                    success:function (data) {
+                        $("#q7_guanliyuan #result_q7_guanliyuan").text(data.errmsg);
+                    },
+                    error: function (xhr) {
+                        $("#q7_guanliyuan #result_q7_guanliyuan").text(xhr.statusText + xhr.resoponseText);
+                    }
+                });
             });
         </script>
         <style type="text/css">
@@ -55,28 +57,8 @@
                 <h1>管理员</h1>
             </div>
             <div data-role="content">
-                <div id="result_q7_guanliyuan">
-                </div>
-                <div data-role="fieldcontain">
-                    <label for="operation_q7_guanliyuan"><span>操作类型:</span></label>
-                    <select id="operation_q7_guanliyuan" name="operation_q7_guanliyuan" data-role="slider">
-                        <option value="create_manager" selected="selected">管理员</option>
-                        <option value="pwd_modify">密码</option>
-                    </select>
-                </div>
-                <div id="block_createmanager_q7_guanliyuan">
-                    <h3>添加管理员:</h3>
-                    <form action="#" id="createmanager_q7_guanliyuan" method="post">
-                        <label for="m_name_q7_guanliyuan">唯一ID:</label>
-                        <input type="text" id="m_name_q7_guanliyuan" name="m_name_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        
-                        <label for="pwd1_manager_q7_guanliyuan">新密码:</label>
-                        <input type="password" id="pwd1_manager_q7_guanliyuan" name="pwd1_manager_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <label for="pwd2_manager_q7_guanliyuan">新密码确认:</label>
-                        <input type="password" id="pwd2_manager_q7_guanliyuan" name="pwd2_manager_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <input type="submit" value="确认"/>
-                    </form>
-                </div>
+                <p id="result_q7_guanliyuan">
+                </p>
                 <div id="block_m_pwd_q7_guanliyuan">
                     <h3>修改密码:</h3>
                     <form action="#" id="m_pwd_q7_guanliyuan" method="post">
@@ -86,7 +68,7 @@
                         <input type="password" id="new1_pwd_q7_guanliyuan" name="new1_pwd_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
                         <label for="new2_pwd_q7_guanliyuan">新密码确认:</label>
                         <input type="password" id="new2_pwd_q7_guanliyuan" name="new2_pwd_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <input type="submit" value="确认"/>
+                        <a href="#" data-role="button" id="confirm_m_pwd_q7_guanliyuan">确认</a>
                     </form>
                 </div>
             </div>

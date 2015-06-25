@@ -939,5 +939,10 @@ func checkAuth(w http.ResponseWriter, r *http.Request) bool {
 	return true
 		
 }
+func ModifyAdminPwd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	fmt.Fprintf(w, "{errcode:%d ,errmsg:%s}", 0 ,"Success")
+	
+}
 //admin end
 //微网站 end

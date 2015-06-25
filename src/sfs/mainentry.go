@@ -75,7 +75,8 @@ func main() {
 	router.GET("/get_q7_list", controller.GetQ7List)
 	router.GET("/get_q7_detail", controller.GetQ7DetailInfo)
 	//admin---
-	router.POST("/login", controller.Login)
+	router.POST("/admin/login", controller.Login)
+	router.POST("/admin/modify_pwd", controller.ModifyAdminPwd)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)
