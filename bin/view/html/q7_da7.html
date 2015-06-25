@@ -26,8 +26,9 @@
                     $("#enroll_content_q7_detail_page").text(data.enrollway);
                     $("#images_content_q7_detail_page").text(data.imagenames);
                     $.each(data.imagenames, function (i, data ){
-                        $("#slideshow_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data))
+                        $("#slideshow_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data + ">"))
                     });
+                    $('#slideshow_content_q7_detail_page').cycle({fx:'fade', direction:'right, timeout:3000, speed: 300'});
                 });
             });
             /* for infinite scroll only */
@@ -83,6 +84,8 @@
         <style type="text/css">
             div[data-role=fieldcontain] { border-bottom-width: 0px;}
             #q7_massText { border: 1px solid #EEE; border-radius: 8px; padding: 0px 5px 0px 5px;}
+            #slideshow_content_q7_detail_page {border: 2px solid #EEF; padding: 0x 0px; background-size: contain; border-radius: 6px;}
+            #slideshow_content_q7_detail_page img {padding: 5px 0px; width: 99%; height: 90%;padding-left: 2px;margin-top: 6px;}
         </style>
     </head>
     <body>
@@ -110,7 +113,7 @@
             <h1>地藏七编辑页</h1>
         </div>
         <div id="content_q7_detail_page" data-role="content">
-            <div class="cycle-slideshow" id="slideshow_content_q7_detail_page">
+            <div id="slideshow_content_q7_detail_page">
             </div>
             <form action="#" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="id_content_q7_detail_page" name="id_content_q7_detail_page" value=""/>
