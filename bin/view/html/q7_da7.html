@@ -6,6 +6,7 @@
         <script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+        <script type="text/javascript" src="../js/jquery.cycle2.min.js"></script>
         <script type="text/javascript">
             var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";   
             var vQ7Id = {id:""};
@@ -24,6 +25,9 @@
                     $("#q7plan_content_q7_detail_page").text(data.q7plan);
                     $("#enroll_content_q7_detail_page").text(data.enrollway);
                     $("#images_content_q7_detail_page").text(data.imagenames);
+                    $.each(data.imagenames, function (i, data ){
+                        $("#slideshow_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data))
+                    });
                 });
             });
             /* for infinite scroll only */
@@ -106,6 +110,8 @@
             <h1>地藏七编辑页</h1>
         </div>
         <div id="content_q7_detail_page" data-role="content">
+            <div class="cycle-slideshow" id="slideshow_content_q7_detail_page">
+            </div>
             <form action="#" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="id_content_q7_detail_page" name="id_content_q7_detail_page" value=""/>
                 <label for="name_content_q7_detail_page">名字:</label>
