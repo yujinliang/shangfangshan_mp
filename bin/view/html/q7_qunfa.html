@@ -28,23 +28,6 @@
                      $("#news_mass_tuwen").show();
                 }
             });
-            //管理员---
-            $(document).on("click", "#q7_guanliyuan #confirm_m_pwd_q7_guanliyuan", function (e) {
-                e.preventDefault();
-                var formObject = $("#q7_guanliyuan #m_pwd_q7_guanliyuan");
-                var formData = formObject.serialize();
-                $.ajax({
-                    url: vHostDomain + "/admin/modify_pwd",
-                    type:"post",
-                    data:formData,
-                    success:function (data) {
-                        $("#q7_guanliyuan #result_q7_guanliyuan").text(data.errmsg);
-                    },
-                    error: function (xhr) {
-                        $("#q7_guanliyuan #result_q7_guanliyuan").text(xhr.statusText + xhr.resoponseText);
-                    }
-                });
-            });
         </script>
         <style type="text/css">
             div[data-role=fieldcontain] { border-bottom-width: 0px;}
@@ -52,37 +35,6 @@
         </style>
     </head>
     <body>
-        <div data-role="page" id="q7_guanliyuan">
-            <div data-role="header">
-                <h1>管理员</h1>
-            </div>
-            <div data-role="content">
-                <p id="result_q7_guanliyuan">
-                </p>
-                <div id="block_m_pwd_q7_guanliyuan">
-                    <h3>修改密码:</h3>
-                    <form action="#" id="m_pwd_q7_guanliyuan" method="post">
-                        <label for="old_pwd_q7_guanliyuan">原密码:</label>
-                        <input type="password" id="old_pwd_q7_guanliyuan" name="old_pwd_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <label for="new1_pwd_q7_guanliyuan">新密码:</label>
-                        <input type="password" id="new1_pwd_q7_guanliyuan" name="new1_pwd_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <label for="new2_pwd_q7_guanliyuan">新密码确认:</label>
-                        <input type="password" id="new2_pwd_q7_guanliyuan" name="new2_pwd_q7_guanliyuan" data-clear-btn="true" data-mini="true"/>
-                        <a href="#" data-role="button" id="confirm_m_pwd_q7_guanliyuan">确认</a>
-                    </form>
-                </div>
-            </div>
-            <div data-role="footer"  data-position="fixed" data-id="footer">
-               <div data-role="navbar">
-                   <ul>
-                       <li><a href="#q7_guanliyuan" class="ui-btn-active ui-state-persist">管理员</a></li>
-                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
-                       <li><a href="#q7_jieyuan">结缘管理</a></li>
-                       <li><a href="#q7_da7">打七管理</a></li>
-                   </ul>
-                </div> 
-            </div>
-        </div>
         <div data-role="page" id="q7_weixin_qunfa">
             <div data-role="header">
                 <h1>微信群发</h1>
@@ -158,40 +110,10 @@
             <div data-role="footer"  data-position="fixed" data-id="footer">
                <div data-role="navbar">
                    <ul>
-                       <li><a href="#q7_guanliyuan" >管理员</a></li>
-                       <li><a href="#q7_weixin_qunfa" class="ui-btn-active ui-state-persist">微信群发</a></li>
-                       <li><a href="#q7_jieyuan">结缘管理</a></li>
-                       <li><a href="#q7_da7">打七管理</a></li>
-                   </ul>
-                </div> 
-            </div>
-        </div>
-        <div data-role="page" id="q7_jieyuan">
-            <div data-role="header">
-                <h1>结缘管理</h1>
-            </div>
-            <div data-role="footer"  data-position="fixed" data-id="footer">
-               <div data-role="navbar">
-                   <ul>
-                       <li><a href="#q7_guanliyuan" >管理员</a></li>
-                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
-                       <li><a href="#q7_jieyuan" class="ui-btn-active ui-state-persist">结缘管理</a></li>
-                       <li><a href="#q7_da7">打七管理</a></li>
-                   </ul>
-                </div> 
-            </div>
-        </div>
-        <div data-role="page" id="q7_da7">
-            <div data-role="header">
-                <h1>打七管理</h1>
-            </div>
-            <div data-role="footer"  data-position="fixed" data-id="footer">
-               <div data-role="navbar">
-                   <ul>
-                       <li><a href="#q7_guanliyuan" >管理员</a></li>
-                       <li><a href="#q7_weixin_qunfa">微信群发</a></li>
-                       <li><a href="#q7_jieyuan">结缘管理</a></li>
-                       <li><a href="#q7_da7" class="ui-btn-active ui-state-persist">打七管理</a></li>
+                       <li><a href="q7_pwd.html" >管理员</a></li>
+                       <li><a href="q7_qunfa.html" class="ui-btn-active ui-state-persist">微信群发</a></li>
+                       <li><a href="q7_jieyuan.html">结缘管理</a></li>
+                       <li><a href="q7_da7.html">打七管理</a></li>
                    </ul>
                 </div> 
             </div>
