@@ -77,6 +77,7 @@ func main() {
 	//admin---
 	router.POST("/admin/login", controller.Login)
 	router.POST("/admin/modify_pwd", controller.ModifyAdminPwd)
+	router.POST("/admin/save_q7_edited_detail", controller.SaveQ7EditDetail)
 	
 	//mux chain.
 	muxchain := make(HostSwitch)

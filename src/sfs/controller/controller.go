@@ -941,6 +941,15 @@ func checkAuth(w http.ResponseWriter, r *http.Request) bool {
 }
 func ModifyAdminPwd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Fprintf(w, "{errcode:%d ,errmsg:%s}", 0 ,"Success")
+	
+}
+func SaveQ7EditDetail(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprintf(w, "{errcode:%d ,errmsg:%s}", 0 ,"Success")
 	
 }
