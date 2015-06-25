@@ -12,6 +12,9 @@
             var vQ7Id = {id:""};
             $(document).ready(function (){
                 $("#form_q7_detail_page").attr("action", vHostDomain + "/admin/save_q7_edited_detail");
+                $('iframe#result_q7_detail_page').load(function () {
+                    alert("iframe is loaded.");
+                });
             });
             //for click item and go to q7 detail page.
             $(document).on("click", "#list_q7_list_page li a", function (e) {
@@ -29,7 +32,7 @@
                     $("#enroll_content_q7_detail_page").text(data.enrollway);
                     $("#images_content_q7_detail_page").text(data.imagenames);
                     $.each(data.imagenames, function (i, data ){
-                        $("#slideshow_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data + ">"))
+                        $("#slideshow_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data + "/>"))
                     });
                     $('#slideshow_content_q7_detail_page').cycle({fx:'fade', direction:'right, timeout:3000, speed: 300'});
                 });
