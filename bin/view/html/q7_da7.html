@@ -8,9 +8,73 @@
         <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
         <script type="text/javascript">
             var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";   
-            $(document).ready(function () {
-
+            var vQ7Id = {id:""};
+            //for click item and go to q7 detail page.
+            $(document).on("click", "#list_q7_list_page li a", function (e) {
+                e.preventDefault();
+                vQ7Id.id = $(this).data("q7-id");
+                $.mobile.changePage(this.href, {transition:"pop", role:"dialog"});
             });
+            $(document).on("pagebeforecreate", "#q7_detail_page", function (e) {
+                $.getJSON(vHostDomain + "/get_q7_detail?q7_id=" + vQ7Id.id, function (data) {
+                    $("#id_content_q7_detail_page").val(data.id);
+                    $("#name_content_q7_detail_page").val(data.name);
+                    $("#desc_content_q7_detail_page").text(data.desc);
+                    $("#limit_content_q7_detail_page").text(data.q7limit);
+                    $("#q7plan_content_q7_detail_page").text(data.q7plan);
+                    $("#enroll_content_q7_detail_page").text(data.enrollway);
+                    $("#images_content_q7_detail_page").text(data.imagenames);
+                });
+            });
+            /* for infinite scroll only */
+            $(document).on("pagebeforecreate", "#q7_list_page", function (e, ui) {
+            //launch ajax for getting json data.
+                $.getJSON(vHostDomain + "/get_q7_list?&count=20&page=1", function (data) {
+                    var items = ''
+                    $.each(data, function (i, item) { 
+                        items += "<li>" + "<a href=#q7_detail_page data-q7-id=" + item.id + ">" +item.name + "</a>" + "</li>"; 
+                    })
+                    $("#list_q7_list_page").append(items).listview("refresh");
+                });
+            });
+            var currentPageNumber = 1;
+            /* load more fucntion */
+            function addMore(page) {
+                $.mobile.loading("show", {
+                    text: "Loading More...",
+                    textVisible: true,
+                    theme: "b"
+                });
+                setTimeout(function () {
+                    $.mobile.loading("hide");
+                }, 2000);
+            //launch ajax for getting json data.
+            $.getJSON(vHostDomain + "/get_q7_list?count=20&page=" + (currentPageNumber + 1), function (data) {
+                var items = ''
+                $.each(data, function (i, item) {
+                    
+                    items += "<li>" + "<a href=#q7_detail_page data-q7-id=" + item.id + ">" + item.name + "</a>" + "</li>";
+                    
+                })
+                $("#list_q7_list_page", page).append(items).listview("refresh");
+                $.mobile.loading("hide");
+                currentPageNumber += 1;
+            });
+        }
+
+        /* scroll event */
+        $(document).on("scrollstop", function (e) {
+            var activePage = $.mobile.pageContainer.pagecontainer("getActivePage"),
+            screenHeight = $.mobile.getScreenHeight(),
+            contentHeight = $(".ui-content", activePage).outerHeight(),
+            header = $(".ui-header", activePage).outerHeight() - 1,
+            scrolled = $(window).scrollTop(),
+            footer = $(".ui-footer", activePage).outerHeight() - 1,
+            scrollEnd = contentHeight - screenHeight + header + footer;
+            if (activePage[0].id == "q7_list_page" && scrolled >= scrollEnd) {
+                addMore(activePage);
+            }
+        });
         </script>
         <style type="text/css">
             div[data-role=fieldcontain] { border-bottom-width: 0px;}
@@ -18,20 +82,52 @@
         </style>
     </head>
     <body>
-    <div data-role="page" id="q7_da7">
-            <div data-role="header">
+    <div data-role="page" id="q7_list_page">
+        <div data-role="header">
                 <h1>打七管理</h1>
-            </div>
-            <div data-role="footer"  data-position="fixed" data-id="footer">
-               <div data-role="navbar">
-                   <ul>
-                       <li><a href="q7_pwd.html" >管理员</a></li>
-                       <li><a href="q7_qunfa.html">微信群发</a></li>
-                       <li><a href="q7_jieyuan.html">结缘管理</a></li>
-                       <li><a href="q7_da7.html" class="ui-btn-active ui-state-persist">打七管理</a></li>
-                   </ul>
-                </div> 
-            </div>
+        </div>
+        <div data-role="content">
+            <ul id="list_q7_list_page" data-role="listview" data-theme="a" data-inset=true>
+            </ul>
+        </div>
+        <div data-role="footer"  data-position="fixed" data-id="footer">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="q7_pwd.html" >管理员</a></li>
+                    <li><a href="q7_qunfa.html">微信群发</a></li>
+                    <li><a href="q7_jieyuan.html">结缘管理</a></li>
+                    <li><a href="q7_da7.html" class="ui-btn-active ui-state-persist">打七管理</a></li>
+                </ul>
+            </div> 
+        </div>
+    </div>
+    <div id="q7_detail_page" data-role="page">
+        <div data-role="header">
+            <h1>地藏七编辑页</h1>
+        </div>
+        <div id="content_q7_detail_page" data-role="content">
+            <form action="#" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="id_content_q7_detail_page" name="id_content_q7_detail_page" value=""/>
+                <label for="name_content_q7_detail_page">名字:</label>
+                <input type="text" id="name_content_q7_detail_page" name="name_content_q7_detail_page" data-clear-btn="true" data-mini="true"/>
+                <label for="desc_content_q7_detail_page">描述:</label>
+                <textarea id="desc_content_q7_detail_page" name="desc_content_q7_detail_page"></textarea>
+                <label for="limit_content_q7_detail_page">限制:</label>
+                <textarea id="limit_content_q7_detail_page" name="limit_content_q7_detail_page"></textarea>
+                <label for="q7plan_content_q7_detail_page">限制:</label>
+                <textarea id="q7plan_content_q7_detail_page" name="q7plan_content_q7_detail_page"></textarea>
+                <label for="enroll_content_q7_detail_page">限制:</label>
+                <textarea id="enroll_content_q7_detail_page" name="enroll_content_q7_detail_page"></textarea>
+                <label for="cover_content_q7_detail_page">封面图片:</label>
+                <input type="file" id="cover_content_q7_detail_page" name="cover_content_q7_detail_page" data-clear-btn="true" data-mini="true"/>
+                <label for="nr_content_q7_detail_page">内容图图片:</label>
+                <input type="file" id="nr_content_q7_detail_page" name="nr_content_q7_detail_page" data-clear-btn="true" data-mini="true"/>
+                <input type="submit" value="保存"/>
+            </form>
+            <div id="q7_close">
+                <a href="#" data-role="button" data-rel="back">关闭</a>
+             </div>
+        </div>
     </div>
     </body>
 </html>

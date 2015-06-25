@@ -74,7 +74,6 @@
             footer = $(".ui-footer", activePage).outerHeight() - 1,
             scrollEnd = contentHeight - screenHeight + header + footer;
             if (activePage[0].id == "q7_list_page" && scrolled >= scrollEnd) {
-                console.log("adding..." + activePage);
                 addMore(activePage);
             }
         });
