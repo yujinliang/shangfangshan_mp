@@ -3,8 +3,8 @@ package controller
 
 import (
 	
-	//"io"
-	//"os"
+	"io"
+	"os"
 	"bufio"
 	"log"
 	"fmt"
@@ -950,6 +950,54 @@ func SaveQ7EditDetail(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	r.ParseMultipartForm(10 << 20)
+	id := r.FormValue("id_content_q7_detail_page")
+	name := r.FormValue("name_content_q7_detail_page")
+	desc := r.FormValue("desc_content_q7_detail_page")
+	limit := r.FormValue("limit_content_q7_detail_page")
+	plan := r.FormValue("q7plan_content_q7_detail_page")
+	enroll := r.FormValue("enroll_content_q7_detail_page")
+	
+	fmt.Printf("%s, %s, %s, %s, %s, %s",id, name, desc, limit, plan, enroll)
+	//upload file handle block.
+	fileCover, handler, err := r.FormFile("cover_content_q7_detail_page")
+	if err != nil {
+		
+		fmt.Fprintf(w, "{\"errcode\":%d, \"errmsg\":\"%s\", \"id\":\"%s\"}", 1, err, "")
+		return
+		
+	}
+	defer fileCover.Close()
+
+	file1, err := os.OpenFile("./upload/" + handler.Filename, os.O_WRONLY | os.O_CREATE, 0666)
+	if err != nil {
+		
+		fmt.Fprintf(w, "{\"errcode\":%d, \"errmsg\":\"%s\", \"id\":\"%s\"}", 1, err, "")
+		return
+		
+	}
+	defer file1.Close()
+	io.Copy(file1, fileCover)
+	//---
+	fileContent, handler, err := r.FormFile("nr_content_q7_detail_page")
+	if err != nil {
+		
+		fmt.Fprintf(w, "{\"errcode\":%d, \"errmsg\":\"%s\", \"id\":\"%s\"}", 1, err, "")
+		return
+		
+	}
+	defer fileContent.Close()
+	
+	file2, err := os.OpenFile("./upload/" + handler.Filename, os.O_WRONLY | os.O_CREATE, 0666)
+	if err != nil {
+		
+		fmt.Fprintf(w, "{\"errcode\":%d, \"errmsg\":\"%s\", \"id\":\"%s\"}", 1, err, "")
+		return
+		
+	}
+	defer file2.Close()
+	io.Copy(file2, fileContent)
+	
 	fmt.Fprintf(w, "{\"errcode\":%d, \"errmsg\": \"%s\",\"id\":\"%s\"}", 0 ,"Success", "1001")
 	
 }
