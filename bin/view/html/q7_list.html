@@ -8,6 +8,7 @@
         <script type="text/javascript" src="../js/handlebars-jquery.js"></script>
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
+        <script type="text/javascript" src="../js/jquery.cycle2.min.js"></script>
         <script type="text/javascript">
         var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";
         var vQ7Id = {id:""};
@@ -25,7 +26,10 @@
                 $("#limit_content_q7_detail_page").text(data.q7limit);
                 $("#q7plan_content_q7_detail_page").text(data.q7plan);
                 $("#enroll_content_q7_detail_page").text(data.enrollway);
-                $("#images_content_q7_detail_page").text(data.imagenames);
+                 $.each(data.imagenames, function (i, data ){
+                        $("#images_content_q7_detail_page").append($("<img src=" + vHostDomain + "/static/img/" + data + "/>"))
+                });
+                $('#images_content_q7_detail_page').cycle({fx:'fade', direction:'right, timeout:3000, speed: 300'});
             });
         });
         /* for infinite scroll only */
@@ -78,6 +82,10 @@
             }
         });
         </script>
+        <style type="text/css">
+            #images_content_q7_detail_page {width:  100%;border: 2px solid #EEF; border-radius: 5px;}
+            #images_content_q7_detail_page img {width:  98%; height: 220px; padding: 3px 3px;}
+        </style>
         <title>地藏七分类</title>
     </head>
     <body>
@@ -92,11 +100,44 @@
                 <h1 id="name_header_q7_detail_page"></h1>
             </div>
             <div id="content_q7_detail_page" data-role="content">
-                <p id="desc_content_q7_detail_page">描述</p>
-                <p id="limit_content_q7_detail_page">限制</p>
-                <p id="q7plan_content_q7_detail_page">时间</p>
-                <p id="enroll_content_q7_detail_page">报名</p>
-                <p id="images_content_q7_detail_page">图片</p>
+                 <div id="images_content_q7_detail_page">
+                </div>
+                
+                <blockquote style="max-width: 100%; color: rgb(62, 62, 62); font-size: medium; white-space: normal; border-left-color: rgb(0, 112, 192); border-left-width: 4px; border-left-style: solid; padding: 0px 10px; line-height: 24px; margin: 0px; font-family: 宋体; word-wrap: break-word !important; box-sizing: border-box !important; background-color: rgb(255, 255, 255);">
+                    <blockquote style="max-width: 100%; word-wrap: break-word !important; box-sizing: border-box !important; border: 1px solid rgb(241, 241, 241); padding: 5px 10px; margin: 5px 0px; border-top-left-radius: 0.5em 4em; border-top-right-radius: 3em 0.5em; box-shadow: rgb(245, 245, 245) 5px 5px 2px; border-bottom-left-radius: 0em 3em; border-bottom-right-radius: 0.5em 1em; border-image-source: none; background-color: rgb(255, 255, 255);">
+                    <p id="desc_content_q7_detail_page" style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: break-word; min-height: 1.5em; white-space: pre-wrap; line-height: 2em; box-sizing: border-box !important;">
+                        描述
+                    </p>
+                    </blockquote>
+                </blockquote>
+                <p style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: normal; min-height: 1em; white-space: pre-wrap; color: rgb(62, 62, 62); font-family: &#39;Helvetica Neue&#39;, Helvetica, &#39;Hiragino Sans GB&#39;, &#39;Microsoft YaHei&#39;, 微软雅黑, Arial, sans-serif; line-height: 25.600000381469727px; box-sizing: border-box !important; background-color: rgb(255, 255, 255);"><br/></p>
+                
+                <blockquote style="max-width: 100%; color: rgb(62, 62, 62); font-size: medium; white-space: normal; border-left-color: rgb(0, 112, 192); border-left-width: 4px; border-left-style: solid; padding: 0px 10px; line-height: 24px; margin: 0px; font-family: 宋体; word-wrap: break-word !important; box-sizing: border-box !important; background-color: rgb(255, 255, 255);">
+                    <blockquote style="max-width: 100%; word-wrap: break-word !important; box-sizing: border-box !important; border: 1px solid rgb(241, 241, 241); padding: 5px 10px; margin: 5px 0px; border-top-left-radius: 0.5em 4em; border-top-right-radius: 3em 0.5em; box-shadow: rgb(245, 245, 245) 5px 5px 2px; border-bottom-left-radius: 0em 3em; border-bottom-right-radius: 0.5em 1em; border-image-source: none; background-color: rgb(255, 255, 255);">
+                    <p id="limit_content_q7_detail_page" style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: break-word; min-height: 1.5em; white-space: pre-wrap; line-height: 2em; box-sizing: border-box !important;">
+                        限制
+                    </p>
+                    </blockquote>
+                </blockquote>
+                <p style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: normal; min-height: 1em; white-space: pre-wrap; color: rgb(62, 62, 62); font-family: &#39;Helvetica Neue&#39;, Helvetica, &#39;Hiragino Sans GB&#39;, &#39;Microsoft YaHei&#39;, 微软雅黑, Arial, sans-serif; line-height: 25.600000381469727px; box-sizing: border-box !important; background-color: rgb(255, 255, 255);"><br/></p>
+
+                <blockquote style="max-width: 100%; color: rgb(62, 62, 62); font-size: medium; white-space: normal; border-left-color: rgb(0, 112, 192); border-left-width: 4px; border-left-style: solid; padding: 0px 10px; line-height: 24px; margin: 0px; font-family: 宋体; word-wrap: break-word !important; box-sizing: border-box !important; background-color: rgb(255, 255, 255);">
+                    <blockquote style="max-width: 100%; word-wrap: break-word !important; box-sizing: border-box !important; border: 1px solid rgb(241, 241, 241); padding: 5px 10px; margin: 5px 0px; border-top-left-radius: 0.5em 4em; border-top-right-radius: 3em 0.5em; box-shadow: rgb(245, 245, 245) 5px 5px 2px; border-bottom-left-radius: 0em 3em; border-bottom-right-radius: 0.5em 1em; border-image-source: none; background-color: rgb(255, 255, 255);">
+                    <p id="q7plan_content_q7_detail_page" style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: break-word; min-height: 1.5em; white-space: pre-wrap; line-height: 2em; box-sizing: border-box !important;">
+                        时间
+                    </p>
+                    </blockquote>
+                </blockquote>
+                <p style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: normal; min-height: 1em; white-space: pre-wrap; color: rgb(62, 62, 62); font-family: &#39;Helvetica Neue&#39;, Helvetica, &#39;Hiragino Sans GB&#39;, &#39;Microsoft YaHei&#39;, 微软雅黑, Arial, sans-serif; line-height: 25.600000381469727px; box-sizing: border-box !important; background-color: rgb(255, 255, 255);"><br/></p>
+                
+                <blockquote style="max-width: 100%; color: rgb(62, 62, 62); font-size: medium; white-space: normal; border-left-color: rgb(0, 112, 192); border-left-width: 4px; border-left-style: solid; padding: 0px 10px; line-height: 24px; margin: 0px; font-family: 宋体; word-wrap: break-word !important; box-sizing: border-box !important; background-color: rgb(255, 255, 255);">
+                    <blockquote style="max-width: 100%; word-wrap: break-word !important; box-sizing: border-box !important; border: 1px solid rgb(241, 241, 241); padding: 5px 10px; margin: 5px 0px; border-top-left-radius: 0.5em 4em; border-top-right-radius: 3em 0.5em; box-shadow: rgb(245, 245, 245) 5px 5px 2px; border-bottom-left-radius: 0em 3em; border-bottom-right-radius: 0.5em 1em; border-image-source: none; background-color: rgb(255, 255, 255)">
+                    <p id="enroll_content_q7_detail_page" style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: break-word; min-height: 1.5em; white-space: pre-wrap; line-height: 2em; box-sizing: border-box !important;">
+                        时间
+                    </p>
+                    </blockquote>
+                </blockquote>
+                <p style="margin-top: 0px; margin-bottom: 0px; max-width: 100%; word-wrap: normal; min-height: 1em; color: rgb(62, 62, 62); line-height: 25.6000003814697px; box-sizing: border-box !important; background-color: rgb(255, 255, 255);"><span style="font-family:Helvetica Neue, Helvetica, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif"><span style="white-space: pre-wrap;"></span></span></p>
                 <div id="q7_submit">
                 </div>
                 <div id="q7_close">
