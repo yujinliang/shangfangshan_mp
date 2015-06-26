@@ -7,14 +7,27 @@
         <script type="text/javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" href="../js/jquery.mobile-1.4.5.min.css" type="text/css" />
         <script type="text/javascript" src="../js/jquery.cycle2.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.form.js"></script>
         <script type="text/javascript">
             var vHostDomain = "http://webapp.jinliangyu_weinxin_dev.tunnel.mobi";   
             var vQ7Id = {id:""};
             $(document).ready(function (){
-                $("#form_q7_detail_page").attr("action", vHostDomain + "/admin/save_q7_edited_detail");
-                $('iframe#result_q7_detail_page').load(function () {
-                    alert("iframe is loaded.");
-                });
+                //$("#form_q7_detail_page").attr("action", vHostDomain + "/admin/save_q7_edited_detail");
+                var options = {
+                    url:vHostDomain + "/admin/save_q7_edited_detail",
+                    type:'post',
+                    dataType:'json',
+                    complete:function (data) {
+                        console.log(data);
+                        $('#result_q7_detail_page').append($('<p>' + data.statusText + " | " + data.responseText + '</p>'));
+                        var jsonO = $.parseJSON(data.responseText);
+                        $('#id_content_q7_detail_page').attr("value", jsonO.id);
+                        
+                    }
+                };
+                $('#submit_form_q7_detail_page').click(function () {
+                    $('#form_q7_detail_page').ajaxSubmit(options);
+                })
             });
             //for click item and go to q7 detail page.
             $(document).on("click", "#list_q7_list_page li a", function (e) {
@@ -137,12 +150,13 @@
                 <input type="file" id="cover_content_q7_detail_page" name="cover_content_q7_detail_page" data-clear-btn="true" data-mini="true"/>
                 <label for="nr_content_q7_detail_page">内容图图片:</label>
                 <input type="file" id="nr_content_q7_detail_page" name="nr_content_q7_detail_page" data-clear-btn="true" data-mini="true"/>
-                <input type="submit" value="保存"/>
+                <a id="submit_form_q7_detail_page" href="#" data-role="button">提交</a>
             </form>
             <div id="q7_close">
                 <a href="#" data-role="button" data-rel="back">关闭</a>
              </div>
-             <iframe id="result_q7_detail_page" name="result_q7_detail_page"style="width:90% height 120px; border-style:none"></iframe>
+             <div id="result_q7_detail_page">
+            </div>
         </div>
     </div>
     </body>
